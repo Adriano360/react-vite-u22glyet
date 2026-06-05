@@ -1,4 +1,6 @@
-import React, { useMemo, useState } from 'react';
+﻿import React, { useMemo, useState } from 'react';
+
+import lightLogo from './assets/light-logo.png';
 
 /*
   APP JSX — Simulador de Proteção de Subestação
@@ -516,7 +518,7 @@ function sortearSemRepetir(lista, usados, filtroArea, atualId) {
 
 export default function App() {
   const [logado, setLogado] = useState(false);
-  const [nome, setNome] = useState('Operador');
+  const [nome, setNome] = useState('');
   const [tela, setTela] = useState('home');
   const [filtroArea, setFiltroArea] = useState('Todas');
   const [cenario, setCenario] = useState(() => embaralhar(cenarios)[0]);
@@ -617,8 +619,8 @@ export default function App() {
     return (
       <main style={s.page}>
         <section style={s.login}>
-          <div style={s.logo}>⚡</div>
-          <h1 style={s.title}>Light Treinamento de Proteção</h1>
+          <img style={s.logo} src={lightLogo} alt="Light" />
+          <h1 style={s.title}>Treinamento de Proteção</h1>
           <p style={s.sub}>
             Simulador operacional para mantenedores e operadores de subestação.
           </p>
@@ -884,32 +886,47 @@ const s = {
     fontFamily: 'Arial, sans-serif',
   },
   login: {
-    maxWidth: 430,
-    margin: '60px auto',
+    maxWidth: 488,
+    margin: '94px auto',
     background: colors.card,
     border: `1px solid ${colors.border}`,
-    borderRadius: 28,
-    padding: 28,
+    borderRadius: 24,
+    padding: '52px 28px 28px',
     textAlign: 'center',
   },
-  logo: { fontSize: 55 },
-  title: { color: colors.top, fontSize: 34, margin: 0 },
-  sub: { color: colors.muted },
+  logo: {
+    width: 84,
+    maxWidth: '40%',
+    height: 'auto',
+    margin: '0 auto 28px',
+    display: 'block',
+  },
+  title: {
+    color: colors.top,
+    fontSize: 36,
+    lineHeight: 1.12,
+    margin: 0,
+  },
+  sub: {
+    color: colors.muted,
+    maxWidth: 420,
+    margin: '16px auto 32px',
+  },
   input: {
     width: '100%',
     boxSizing: 'border-box',
-    padding: 14,
+    padding: '13px 14px',
     borderRadius: 14,
-    border: `1px solid ${colors.border}`,
+    border: '2px solid #111111',
     background: '#F3F6F6',
     color: '#000000',
-    marginTop: 15,
+    marginTop: 0,
     fontSize: 16,
   },
   primary: {
     width: '100%',
     marginTop: 16,
-    background: colors.top,
+    background: '#ff981f',
     color: 'white',
     border: 'none',
     borderRadius: 16,

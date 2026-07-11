@@ -1,5 +1,6 @@
-import subestacaoBanner from '../../assets/subestacao-banner.png';
 import './CourseHomeV2.css';
+import './ResponsiveTraining.css';
+import subestacaoBanner from '../../assets/subestacao-banner.png';
 
 const modules = [
   { title: 'Fundamentos', text: 'Conceitos básicos de sistemas elétricos.', icon: 'book', area: 'Sistema' },

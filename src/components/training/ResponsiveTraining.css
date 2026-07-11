@@ -1,0 +1,70 @@
+/* Correções responsivas globais para as telas internas do treinamento. */
+.training-content,
+.training-content > * {
+  min-width: 0;
+}
+
+@media (max-width: 1100px) {
+  .training-sim-grid {
+    grid-template-columns: minmax(230px, 0.8fr) minmax(320px, 1.2fr);
+  }
+
+  .training-sim-grid > :last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .training-content {
+    width: 100%;
+    margin-left: 0 !important;
+    padding: 14px !important;
+  }
+
+  .training-sim-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 14px;
+  }
+
+  .training-sim-grid > * {
+    min-width: 0;
+    width: 100%;
+    grid-column: auto !important;
+  }
+
+  .scada-panel,
+  .question-panel,
+  .checklist-panel,
+  .certificate-panel,
+  .manager-panel {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .question-panel {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .question-diagram img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .option-button,
+  .primary-button,
+  .secondary-button {
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .certificate-metrics,
+  .manager-grid,
+  .performance-grid {
+    grid-template-columns: 1fr !important;
+  }
+}

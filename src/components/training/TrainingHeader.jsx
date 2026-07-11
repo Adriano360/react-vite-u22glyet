@@ -70,8 +70,8 @@ function SidebarButton({ item, active, onClick, tabIndex }) {
 export function TrainingHeader({
   nome,
   tela,
-  filtroArea,
-  areas,
+  filtroArea = 'Todas',
+  areas = [],
   setTela,
   onSelecionarTrilha,
   menuAberto,
@@ -89,8 +89,10 @@ export function TrainingHeader({
   }, [onCloseMenu]);
 
   function navegar(item) {
-    if (item.area && areas.includes(item.area)) {
+    if (item.area && areas.includes(item.area) && onSelecionarTrilha) {
       onSelecionarTrilha(item.area);
+    } else if (item.area) {
+      setTela('simulador');
     } else {
       setTela(item.target || 'home');
     }

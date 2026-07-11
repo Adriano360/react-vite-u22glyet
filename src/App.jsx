@@ -10,16 +10,6 @@ import { SimuladorView } from './components/training/SimuladorView';
 import { TrainingHeader } from './components/training/TrainingHeader';
 import { cenarios } from './data/cenariosProtecao';
 
-/*
-  APP JSX — Simulador de Proteção de Subestação
-  Melhorias:
-  1) Banco maior de perguntas.
-  2) Não repete pergunta até terminar o ciclo.
-  3) Alternativas embaralhadas.
-  4) Cada cenário tem explicação técnica.
-  5) Filtro por trilha.
-*/
-
 function embaralhar(lista) {
   return [...lista].sort(() => Math.random() - 0.5);
 }
@@ -35,20 +25,19 @@ function obterRespostaCorreta(cenario) {
 }
 
 function sortearSemRepetir(lista, usados, filtroArea, atualId) {
-  const base =
-    filtroArea === 'Todas' ? lista : lista.filter((c) => c.area === filtroArea);
+  const base = filtroArea === 'Todas'
+    ? lista
+    : lista.filter((cenario) => cenario.area === filtroArea);
 
   let disponiveis = base.filter(
-    (c) => !usados.includes(c.id) && c.id !== atualId
+    (cenario) => !usados.includes(cenario.id) && cenario.id !== atualId
   );
 
   if (disponiveis.length === 0) {
-    disponiveis = base.filter((c) => c.id !== atualId);
+    disponiveis = base.filter((cenario) => cenario.id !== atualId);
   }
 
-  if (disponiveis.length === 0) {
-    disponiveis = base;
-  }
+  if (disponiveis.length === 0) disponiveis = base;
 
   return disponiveis[Math.floor(Math.random() * disponiveis.length)];
 }
@@ -72,9 +61,7 @@ export default function App() {
   );
   const [historico, setHistorico] = useState(() => {
     try {
-      return (
-        JSON.parse(localStorage.getItem('treinamentoProtecaoHistorico')) || []
-      );
+      return JSON.parse(localStorage.getItem('treinamentoProtecaoHistorico')) || [];
     } catch {
       return [];
     }
@@ -82,23 +69,23 @@ export default function App() {
   const [usados, setUsados] = useState([]);
 
   const areas = useMemo(
-    () => ['Todas', ...new Set(cenarios.map((c) => c.area))],
+    () => ['Todas', ...new Set(cenarios.map((cenario) => cenario.area))],
     []
   );
 
-  const acertos = historico.filter((h) => h.acertou).length;
+  const acertos = historico.filter((item) => item.acertou).length;
   const taxa = historico.length
     ? Math.round((acertos / historico.length) * 100)
     : 0;
   const aprovado = taxa >= 70 && historico.length >= 8;
-  const erros = historico.filter((h) => !h.acertou);
-  const totalDaTrilha =
-    filtroArea === 'Todas'
-      ? cenarios.length
-      : cenarios.filter((c) => c.area === filtroArea).length;
+  const erros = historico.filter((item) => !item.acertou);
+  const totalDaTrilha = filtroArea === 'Todas'
+    ? cenarios.length
+    : cenarios.filter((cenarioItem) => cenarioItem.area === filtroArea).length;
   const progressoRodada = totalDaTrilha
     ? Math.min(100, Math.round((usados.length / totalDaTrilha) * 100))
     : 0;
+
   const desempenhoPorTrilha = useMemo(() => {
     return areas
       .filter((area) => area !== 'Todas')
@@ -119,12 +106,11 @@ export default function App() {
         };
       });
   }, [areas, historico]);
+
   const recomendacao = useMemo(() => {
-    return (
-      desempenhoPorTrilha
-        .filter((item) => item.tentativas > 0)
-        .sort((a, b) => b.erros - a.erros || a.taxa - b.taxa)[0] || null
-    );
+    return desempenhoPorTrilha
+      .filter((item) => item.tentativas > 0)
+      .sort((a, b) => b.erros - a.erros || a.taxa - b.taxa)[0] || null;
   }, [desempenhoPorTrilha]);
 
   useEffect(() => {
@@ -176,11 +162,12 @@ export default function App() {
     setSelecionada(null);
 
     setUsados((anteriores) => {
-      const baseArea =
-        areaEscolhida === 'Todas'
-          ? cenarios
-          : cenarios.filter((c) => c.area === areaEscolhida);
-      const todosUsados = baseArea.every((c) => anteriores.includes(c.id));
+      const baseArea = areaEscolhida === 'Todas'
+        ? cenarios
+        : cenarios.filter((cenarioItem) => cenarioItem.area === areaEscolhida);
+      const todosUsados = baseArea.every((cenarioItem) =>
+        anteriores.includes(cenarioItem.id)
+      );
 
       if (todosUsados) return [escolhido.id];
       if (anteriores.includes(escolhido.id)) return anteriores;
@@ -193,8 +180,9 @@ export default function App() {
     setUsados([]);
     setSelecionada(null);
 
-    const base =
-      area === 'Todas' ? cenarios : cenarios.filter((c) => c.area === area);
+    const base = area === 'Todas'
+      ? cenarios
+      : cenarios.filter((cenarioItem) => cenarioItem.area === area);
     const escolhido = embaralhar(base)[0];
 
     setCenario(escolhido);
@@ -214,10 +202,10 @@ export default function App() {
     const acertou = alternativa.id === cenario.respostaCorretaId;
     setSelecionada(alternativa.id);
 
-    if (acertou) setPontos((p) => p + 25);
+    if (acertou) setPontos((valorAtual) => valorAtual + 25);
 
-    setHistorico((h) => [
-      ...h,
+    setHistorico((itens) => [
+      ...itens,
       {
         id: cenario.id,
         area: cenario.area,
@@ -243,7 +231,7 @@ export default function App() {
   function refazerErros() {
     if (!erros.length) return;
 
-    const primeiroErro = cenarios.find((c) => c.id === erros[0].id);
+    const primeiroErro = cenarios.find((cenarioItem) => cenarioItem.id === erros[0].id);
     if (!primeiroErro) return;
 
     setFiltroArea('Todas');
@@ -252,6 +240,11 @@ export default function App() {
     setSelecionada(null);
     setUsados([primeiroErro.id]);
     setTela('simulador');
+  }
+
+  function sair() {
+    setMenuAberto(false);
+    setLogado(false);
   }
 
   if (!logado) {
@@ -265,35 +258,41 @@ export default function App() {
     );
   }
 
+  if (tela === 'home') {
+    return (
+      <HomeView
+        nome={nome}
+        tela={tela}
+        filtroArea={filtroArea}
+        totalCenarios={cenarios.length}
+        pontos={pontos}
+        tentativas={historico.length}
+        acertos={acertos}
+        taxa={taxa}
+        areas={areas}
+        onSair={sair}
+        onNavigate={setTela}
+        onSelecionarTrilha={selecionarTrilha}
+      />
+    );
+  }
+
   return (
     <main className={menuAberto ? 'training-app sidebar-open' : 'training-app'}>
       <TrainingHeader
         nome={nome}
         tela={tela}
+        filtroArea={filtroArea}
+        areas={areas}
         setTela={setTela}
+        onSelecionarTrilha={selecionarTrilha}
         menuAberto={menuAberto}
         onToggleMenu={() => setMenuAberto((aberto) => !aberto)}
         onCloseMenu={() => setMenuAberto(false)}
-        onSair={() => {
-          setMenuAberto(false);
-          setLogado(false);
-        }}
+        onSair={sair}
       />
 
       <div className="training-content">
-        {tela === 'home' && (
-          <HomeView
-            totalCenarios={cenarios.length}
-            pontos={pontos}
-            tentativas={historico.length}
-            acertos={acertos}
-            taxa={taxa}
-            areas={areas}
-            onIniciar={() => setTela('simulador')}
-            onSelecionarTrilha={selecionarTrilha}
-          />
-        )}
-
         {tela === 'simulador' && (
           <SimuladorView
             areas={areas}

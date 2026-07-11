@@ -1,6 +1,7 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import './App.css';
+import './components/training/HomeDashboard.css';
 import { CertificadoView } from './components/training/CertificadoView';
 import { GestorView } from './components/training/GestorView';
 import { HomeView } from './components/training/HomeView';
@@ -60,6 +61,7 @@ export default function App() {
     () => localStorage.getItem('treinamentoProtecaoNome') || ''
   );
   const [tela, setTela] = useState('home');
+  const [menuAberto, setMenuAberto] = useState(false);
   const [filtroArea, setFiltroArea] = useState('Todas');
   const [cenario, setCenario] = useState(() => embaralhar(cenarios)[0]);
   const [opcoes, setOpcoes] = useState([]);
@@ -264,67 +266,75 @@ export default function App() {
   }
 
   return (
-    <main className="training-app">
+    <main className={menuAberto ? 'training-app sidebar-open' : 'training-app'}>
       <TrainingHeader
         nome={nome}
         tela={tela}
         setTela={setTela}
-        onSair={() => setLogado(false)}
+        menuAberto={menuAberto}
+        onToggleMenu={() => setMenuAberto((aberto) => !aberto)}
+        onCloseMenu={() => setMenuAberto(false)}
+        onSair={() => {
+          setMenuAberto(false);
+          setLogado(false);
+        }}
       />
 
-      {tela === 'home' && (
-        <HomeView
-          totalCenarios={cenarios.length}
-          pontos={pontos}
-          tentativas={historico.length}
-          acertos={acertos}
-          taxa={taxa}
-          areas={areas}
-          onIniciar={() => setTela('simulador')}
-          onSelecionarTrilha={selecionarTrilha}
-        />
-      )}
+      <div className="training-content">
+        {tela === 'home' && (
+          <HomeView
+            totalCenarios={cenarios.length}
+            pontos={pontos}
+            tentativas={historico.length}
+            acertos={acertos}
+            taxa={taxa}
+            areas={areas}
+            onIniciar={() => setTela('simulador')}
+            onSelecionarTrilha={selecionarTrilha}
+          />
+        )}
 
-      {tela === 'simulador' && (
-        <SimuladorView
-          areas={areas}
-          filtroArea={filtroArea}
-          cenario={cenario}
-          opcoes={opcoes}
-          selecionada={selecionada}
-          usados={usados}
-          totalDaTrilha={totalDaTrilha}
-          progressoRodada={progressoRodada}
-          onTrocarArea={trocarArea}
-          onResponder={responder}
-          onNovoCenario={() => novoCenario()}
-        />
-      )}
+        {tela === 'simulador' && (
+          <SimuladorView
+            areas={areas}
+            filtroArea={filtroArea}
+            cenario={cenario}
+            opcoes={opcoes}
+            selecionada={selecionada}
+            usados={usados}
+            totalDaTrilha={totalDaTrilha}
+            progressoRodada={progressoRodada}
+            onTrocarArea={trocarArea}
+            onResponder={responder}
+            onNovoCenario={() => novoCenario()}
+          />
+        )}
 
-      {tela === 'gestor' && (
-        <GestorView
-          nome={nome}
-          pontos={pontos}
-          taxa={taxa}
-          aprovado={aprovado}
-          historico={historico}
-          desempenhoPorTrilha={desempenhoPorTrilha}
-          recomendacao={recomendacao}
-          erros={erros}
-          onRefazerErros={refazerErros}
-          onReiniciar={reiniciar}
-        />
-      )}
+        {tela === 'gestor' && (
+          <GestorView
+            nome={nome}
+            pontos={pontos}
+            taxa={taxa}
+            aprovado={aprovado}
+            historico={historico}
+            desempenhoPorTrilha={desempenhoPorTrilha}
+            recomendacao={recomendacao}
+            erros={erros}
+            onRefazerErros={refazerErros}
+            onReiniciar={reiniciar}
+          />
+        )}
 
-      {tela === 'certificado' && (
-        <CertificadoView
-          nome={nome}
-          pontos={pontos}
-          taxa={taxa}
-          aprovado={aprovado}
-          onContinuar={() => setTela('simulador')}
-        />
-      )}
+        {tela === 'certificado' && (
+          <CertificadoView
+            nome={nome}
+            pontos={pontos}
+            taxa={taxa}
+            aprovado={aprovado}
+            onContinuar={() => setTela('simulador')}
+          />
+        )}
+      </div>
     </main>
   );
 }

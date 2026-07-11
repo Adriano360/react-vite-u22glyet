@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 const mainItems = [
   { id: 'home', label: 'Início', icon: 'home', target: 'home' },
@@ -79,6 +79,15 @@ export function TrainingHeader({
   onCloseMenu,
   onSair,
 }) {
+  const iniciouMenu = useRef(false);
+
+  useEffect(() => {
+    if (!iniciouMenu.current && window.innerWidth >= 1024 && !menuAberto) {
+      iniciouMenu.current = true;
+      onToggleMenu();
+    }
+  }, []);
+
   useEffect(() => {
     function fecharComEsc(event) {
       if (event.key === 'Escape') onCloseMenu();
@@ -91,10 +100,8 @@ export function TrainingHeader({
   function navegar(item) {
     if (item.area && areas.includes(item.area) && onSelecionarTrilha) {
       onSelecionarTrilha(item.area);
-    } else if (item.area) {
-      setTela('simulador');
     } else {
-      setTela(item.target || 'home');
+      setTela(item.target || 'simulador');
     }
 
     if (window.innerWidth < 1024) onCloseMenu();

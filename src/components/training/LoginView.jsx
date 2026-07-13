@@ -1,20 +1,10 @@
+import lightLogo from '../../assets/light-logo.png';
+
 export function LoginView({ nome, setNome, erroLogin, onEntrar }) {
   return (
     <main className="training-app login-screen">
       <section className="training-login">
-        <div
-          aria-label="Light+"
-          style={{
-            margin: '0 auto 18px',
-            color: '#009e95',
-            fontSize: '46px',
-            fontWeight: 900,
-            lineHeight: 1,
-            letterSpacing: '-2px',
-          }}
-        >
-          Light<span style={{ color: '#ff981f' }}>+</span>
-        </div>
+        <img className="training-logo" src={lightLogo} alt="Light+" />
         <h1>Treinamento de Proteção</h1>
         <p>
           Simulador operacional para capacitação de mantenedores e operadores

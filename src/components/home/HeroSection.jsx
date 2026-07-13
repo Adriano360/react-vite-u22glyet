@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import subestacaoBanner from '../../assets/subestacao-banner.png';
 import subestacaoSlider01 from '../../assets/subestacao-slider-01.webp';
@@ -33,28 +33,51 @@ const slides = [
 export function HeroSection() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const currentSlide = slides[activeSlide];
+  const [failedSlides, setFailedSlides] = useState(() => new Set());
+
+  const availableSlides = useMemo(
+    () => slides.map((_, index) => index).filter((index) => !failedSlides.has(index)),
+    [failedSlides]
+  );
+
+  useEffect(() => {
+    if (!availableSlides.length || availableSlides.includes(activeSlide)) return;
+    setActiveSlide(availableSlides[0]);
+  }, [activeSlide, availableSlides]);
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia(
       '(prefers-reduced-motion: reduce)'
     ).matches;
 
-    if (isPaused || prefersReducedMotion) return undefined;
+    if (isPaused || prefersReducedMotion || availableSlides.length < 2) {
+      return undefined;
+    }
 
-    const timer = window.setInterval(() => {
-      setActiveSlide((current) => (current + 1) % slides.length);
+    const timer = window.setTimeout(() => {
+      const currentPosition = availableSlides.indexOf(activeSlide);
+      const nextPosition = (currentPosition + 1) % availableSlides.length;
+      setActiveSlide(availableSlides[nextPosition]);
     }, 6000);
 
-    return () => window.clearInterval(timer);
-  }, [isPaused]);
+    return () => window.clearTimeout(timer);
+  }, [activeSlide, availableSlides, isPaused]);
 
-  function showPreviousSlide() {
-    setActiveSlide((current) => (current - 1 + slides.length) % slides.length);
+  function moveSlide(direction) {
+    if (availableSlides.length < 2) return;
+
+    const currentPosition = availableSlides.indexOf(activeSlide);
+    const nextPosition =
+      (currentPosition + direction + availableSlides.length) % availableSlides.length;
+    setActiveSlide(availableSlides[nextPosition]);
   }
 
-  function showNextSlide() {
-    setActiveSlide((current) => (current + 1) % slides.length);
+  function handleImageError(index) {
+    setFailedSlides((current) => {
+      const next = new Set(current);
+      next.add(index);
+      return next;
+    });
   }
 
   return (
@@ -71,18 +94,27 @@ export function HeroSection() {
         }
       }}
     >
-      <div className="home-hero-slides" aria-live="polite">
-        <div className="home-hero-slide active" key={`${activeSlide}-${currentSlide.src}`}>
+      <div className="home-hero-media" aria-live="off">
+        {slides.map((slide, index) => (
           <img
-            src={currentSlide.src}
-            alt={currentSlide.alt}
-            style={{ objectPosition: currentSlide.position }}
+            key={slide.src}
+            className={
+              index === activeSlide
+                ? 'home-hero-image active'
+                : 'home-hero-image'
+            }
+            src={slide.src}
+            alt={index === activeSlide ? slide.alt : ''}
+            aria-hidden={index !== activeSlide}
+            style={{ objectPosition: slide.position }}
             loading="eager"
-            decoding="sync"
-            fetchPriority="high"
+            decoding="async"
+            onError={() => handleImageError(index)}
           />
-        </div>
+        ))}
       </div>
+
+      <div className="home-hero-scrim" aria-hidden="true" />
 
       <div className="home-hero-overlay">
         <div className="home-hero-copy">
@@ -107,8 +139,9 @@ export function HeroSection() {
         <button
           type="button"
           className="home-hero-arrow previous"
-          onClick={showPreviousSlide}
+          onClick={() => moveSlide(-1)}
           aria-label="Exibir imagem anterior"
+          disabled={availableSlides.length < 2}
         >
           <span aria-hidden="true">‹</span>
         </button>
@@ -122,6 +155,7 @@ export function HeroSection() {
               onClick={() => setActiveSlide(index)}
               aria-label={`Exibir imagem ${index + 1} de ${slides.length}`}
               aria-current={index === activeSlide ? 'true' : undefined}
+              disabled={failedSlides.has(index)}
             />
           ))}
         </div>
@@ -129,8 +163,9 @@ export function HeroSection() {
         <button
           type="button"
           className="home-hero-arrow next"
-          onClick={showNextSlide}
+          onClick={() => moveSlide(1)}
           aria-label="Exibir próxima imagem"
+          disabled={availableSlides.length < 2}
         >
           <span aria-hidden="true">›</span>
         </button>

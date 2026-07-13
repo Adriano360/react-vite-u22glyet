@@ -1,0 +1,82 @@
+/* Ajustes finais de navegação: neutraliza regras antigas do App.css no cabeçalho. */
+.professional-header.training-header {
+  box-sizing: border-box;
+  height: var(--header-height);
+  min-height: var(--header-height);
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+/* Garante que a marca do menu lateral seja exibida por inteiro. */
+.training-sidebar .sidebar-brand {
+  min-height: 64px;
+  display: grid;
+  align-content: center;
+  gap: 4px;
+  flex: 0 0 auto;
+  padding: 2px 8px 18px;
+  border-bottom: 1px solid #e8edef;
+  overflow: visible;
+}
+
+.training-sidebar .sidebar-brand strong {
+  display: block;
+  margin: 0;
+  color: #009e95;
+  font-size: 30px;
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -1px;
+  white-space: nowrap;
+}
+
+.training-sidebar .sidebar-brand strong span {
+  color: #ff981f;
+}
+
+.training-sidebar .sidebar-brand small {
+  display: block;
+  color: #61717f;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+@media (max-width: 1023px) {
+  .professional-header.training-header {
+    width: 100%;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .training-sidebar {
+    top: var(--header-height);
+    max-height: calc(100dvh - var(--header-height));
+    padding-top: 18px;
+  }
+}
+
+@media (max-width: 760px) {
+  .professional-header.training-header {
+    height: 70px;
+    min-height: 70px;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .training-sidebar {
+    top: 70px;
+    max-height: calc(100dvh - 70px);
+  }
+
+  .training-sidebar .sidebar-brand {
+    min-height: 60px;
+    padding-bottom: 15px;
+  }
+
+  .training-sidebar .sidebar-brand strong {
+    font-size: 28px;
+  }
+}

@@ -5,6 +5,7 @@ import { HeroSection } from '../home/HeroSection';
 import { HomeFooter, HomeInfoSections, QuickAccess } from '../home/HomeInfoSections';
 import { MainLayout } from '../home/MainLayout';
 import './Home.css';
+import '../home/HeroSlider.css';
 
 const TOTAL_MODULES = 6;
 

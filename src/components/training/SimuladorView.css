@@ -1,0 +1,486 @@
+.scada-training-page {
+  --scada-green: #009e95;
+  --scada-green-dark: #075f5a;
+  --scada-navy: #0c2340;
+  --scada-orange: #ff981f;
+  --scada-border: #dfe7e9;
+  --scada-muted: #667682;
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.scada-page-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+  padding: 2px 2px 14px;
+  border-bottom: 1px solid var(--scada-border);
+}
+
+.scada-page-icon {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #cfe7e4;
+  border-radius: 10px;
+  background: #eff8f7;
+  color: var(--scada-green-dark);
+}
+
+.scada-page-icon svg,
+.scada-alert-icon svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.scada-page-eyebrow,
+.scada-section-eyebrow {
+  display: block;
+  color: var(--scada-green-dark);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.scada-page-header h1 {
+  margin: 2px 0 0;
+  color: var(--scada-navy);
+  font-size: 24px;
+  line-height: 1.15;
+}
+
+.scada-page-header p {
+  margin: 3px 0 0;
+  color: var(--scada-muted);
+  font-size: 14px;
+}
+
+.scada-layout {
+  display: grid;
+  gap: 16px;
+}
+
+.scada-section {
+  border: 1px solid var(--scada-border);
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 8px 22px rgba(12, 35, 64, 0.045);
+}
+
+.scada-context-section,
+.scada-procedure-section {
+  padding: 22px;
+}
+
+.scada-question-section {
+  padding: 24px;
+}
+
+.scada-section-heading > div {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.scada-section-heading > div > span {
+  min-width: 30px;
+  color: var(--scada-green-dark);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+}
+
+.scada-section-heading h2,
+.scada-question-copy h2 {
+  margin: 0;
+  color: var(--scada-navy);
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+.scada-section-heading p,
+.scada-question-copy p {
+  margin: 5px 0 0;
+  color: var(--scada-muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.scada-context-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.scada-context-grid .info-item,
+.scada-field {
+  min-height: 72px;
+  display: grid;
+  align-content: center;
+  gap: 5px;
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid #e3eaec;
+  border-radius: 8px;
+  background: #f8fafb;
+}
+
+.scada-context-grid .info-item small,
+.scada-field > span {
+  color: #71808a;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.scada-context-grid .info-item strong {
+  color: var(--scada-navy);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.scada-trail-field {
+  grid-column: span 1;
+}
+
+.scada-field select {
+  width: 100%;
+  min-height: 38px;
+  padding: 0 34px 0 10px;
+  border: 1px solid #ccd8db;
+  border-radius: 7px;
+  background: #ffffff;
+  color: var(--scada-navy);
+  font: inherit;
+  font-size: 14px;
+}
+
+.scada-operational-alert {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 12px;
+  margin-top: 14px;
+  padding: 15px 16px;
+  border: 1px solid #ead7b8;
+  border-left: 4px solid var(--scada-orange);
+  border-radius: 8px;
+  background: #fffaf2;
+}
+
+.scada-alert-icon {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  color: #9a5b08;
+}
+
+.scada-operational-alert strong {
+  color: var(--scada-navy);
+  font-size: 14px;
+}
+
+.scada-operational-alert p {
+  margin: 5px 0 0;
+  color: #5f6f7a;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.scada-question-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #e8edef;
+  color: #6f7e88;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.scada-question-meta span:first-child {
+  color: var(--scada-green-dark);
+}
+
+.scada-question-copy {
+  margin-top: 20px;
+}
+
+.scada-question-copy h2 {
+  margin-top: 6px;
+  font-size: 21px;
+}
+
+.scada-answer-fieldset {
+  min-width: 0;
+  margin: 22px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.scada-answer-fieldset legend {
+  width: 100%;
+  margin-bottom: 12px;
+  color: var(--scada-navy);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.scada-answer-list {
+  display: grid;
+  gap: 9px;
+}
+
+.scada-training-page .option-button {
+  width: 100%;
+  min-height: 56px;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid #dfe6e8;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #263846;
+  font-size: 14px;
+  line-height: 1.45;
+  text-align: left;
+  transition: border-color 170ms ease, background-color 170ms ease;
+}
+
+.scada-training-page .option-button:hover {
+  border-color: #a8cfca;
+  background: #f8fcfb;
+  box-shadow: none;
+  transform: none;
+}
+
+.scada-training-page .option-button.selected {
+  border-color: var(--scada-green);
+  background: #effaf8;
+}
+
+.option-marker {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #cfdadd;
+  border-radius: 7px;
+  background: #f5f7f8;
+  color: var(--scada-navy);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.option-button.selected .option-marker,
+.option-button.correct .option-marker {
+  border-color: var(--scada-green);
+  background: var(--scada-green);
+  color: #ffffff;
+}
+
+.scada-training-page .option-button.wrong {
+  border-color: #d45a5a;
+  background: #fff7f7;
+}
+
+.scada-training-page .option-button:focus-visible,
+.scada-field select:focus-visible,
+.scada-next-button:focus-visible {
+  outline: 3px solid rgba(0, 158, 149, 0.25);
+  outline-offset: 2px;
+}
+
+.scada-checklist {
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.scada-checklist li {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  border-bottom: 1px solid #e8edef;
+}
+
+.scada-checklist li:last-child {
+  border-bottom: 0;
+}
+
+.scada-checklist li > span {
+  color: var(--scada-green-dark);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+}
+
+.scada-checklist li > strong {
+  color: #314452;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.scada-round-progress {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid #e5ebed;
+}
+
+.scada-round-progress > div:first-child {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+
+.scada-round-progress span,
+.scada-round-progress strong {
+  display: block;
+}
+
+.scada-round-progress > div:first-child span {
+  color: var(--scada-navy);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.scada-round-progress > div:first-child strong {
+  color: var(--scada-muted);
+  font-size: 12px;
+}
+
+.scada-training-page .progress-track {
+  height: 7px;
+  margin: 0;
+  background: #e4eaec;
+}
+
+.scada-training-page .progress-track span {
+  background: var(--scada-green);
+}
+
+.scada-next-button {
+  margin-top: 16px;
+  border-radius: 9px;
+}
+
+@media (min-width: 1024px) {
+  .scada-layout {
+    grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.75fr);
+    align-items: start;
+  }
+
+  .scada-context-section,
+  .scada-question-section {
+    grid-column: 1;
+  }
+
+  .scada-procedure-section {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    position: sticky;
+    top: calc(var(--header-height, 78px) + 18px);
+  }
+}
+
+@media (max-width: 760px) {
+  .scada-training-page {
+    width: 100%;
+  }
+
+  .scada-page-header {
+    margin-bottom: 14px;
+  }
+
+  .scada-page-header h1 {
+    font-size: 21px;
+  }
+
+  .scada-page-header p {
+    font-size: 13px;
+  }
+
+  .scada-context-section,
+  .scada-question-section,
+  .scada-procedure-section {
+    padding: 16px;
+    border-radius: 9px;
+  }
+
+  .scada-context-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .scada-trail-field,
+  .scada-context-grid .info-item:last-of-type {
+    grid-column: 1 / -1;
+  }
+
+  .scada-context-grid .info-item,
+  .scada-field {
+    min-height: 66px;
+    padding: 11px 12px;
+  }
+
+  .scada-question-copy h2 {
+    font-size: 19px;
+  }
+
+  .scada-question-meta {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .scada-round-progress > div:first-child {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+@media (max-width: 390px) {
+  .scada-context-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .scada-trail-field,
+  .scada-context-grid .info-item:last-of-type {
+    grid-column: auto;
+  }
+
+  .scada-training-page .option-button {
+    grid-template-columns: 30px minmax(0, 1fr);
+    padding: 10px 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scada-training-page *,
+  .scada-training-page *::before,
+  .scada-training-page *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

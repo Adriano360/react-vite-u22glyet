@@ -33,6 +33,7 @@ const slides = [
 export function HeroSection() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const currentSlide = slides[activeSlide];
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia(
@@ -71,24 +72,16 @@ export function HeroSection() {
       }}
     >
       <div className="home-hero-slides" aria-live="polite">
-        {slides.map((slide, index) => (
-          <div
-            key={slide.src}
-            className={
-              index === activeSlide
-                ? 'home-hero-slide active'
-                : 'home-hero-slide'
-            }
-            aria-hidden={index !== activeSlide}
-          >
-            <img
-              src={slide.src}
-              alt={index === activeSlide ? slide.alt : ''}
-              style={{ objectPosition: slide.position }}
-              loading={index === 0 ? 'eager' : 'lazy'}
-            />
-          </div>
-        ))}
+        <div className="home-hero-slide active" key={`${activeSlide}-${currentSlide.src}`}>
+          <img
+            src={currentSlide.src}
+            alt={currentSlide.alt}
+            style={{ objectPosition: currentSlide.position }}
+            loading="eager"
+            decoding="sync"
+            fetchPriority="high"
+          />
+        </div>
       </div>
 
       <div className="home-hero-overlay">

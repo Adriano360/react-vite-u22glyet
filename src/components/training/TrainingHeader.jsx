@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import './TrainingHeaderFix.css';
 
 const mainItems = [
   { id: 'home', label: 'Início', icon: 'home', target: 'home' },

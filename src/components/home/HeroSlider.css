@@ -21,7 +21,8 @@
 .home-hero-slide {
   opacity: 0;
   visibility: hidden;
-  transition: opacity 900ms ease, visibility 900ms ease;
+  will-change: opacity;
+  transition: opacity 650ms ease, visibility 650ms ease;
 }
 
 .home-hero-slide.active {
@@ -35,12 +36,14 @@
   height: 100%;
   display: block;
   object-fit: cover;
-  transform: scale(1.015);
-  filter: saturate(0.96) contrast(1.03);
+  transform: none;
+  filter: none;
+  image-rendering: auto;
+  backface-visibility: hidden;
 }
 
 .home-hero-slide.active img {
-  animation: homeHeroKenBurns 6.8s ease-out both;
+  animation: none;
 }
 
 .home-hero-slide::after {
@@ -138,18 +141,19 @@
   background: #ff981f;
 }
 
-@keyframes homeHeroKenBurns {
-  from { transform: scale(1.015); }
-  to { transform: scale(1.07); }
-}
-
 @media (max-width: 760px) {
   .home-hero-slider {
     min-height: 540px;
   }
 
+  .home-hero-slide {
+    transition-duration: 450ms;
+  }
+
   .home-hero-slide img {
     object-position: center;
+    transform: none !important;
+    filter: none !important;
   }
 
   .home-hero-slide::after {

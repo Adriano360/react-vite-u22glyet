@@ -906,11 +906,8 @@ export const cenarios = [
       {
         titulo: 'Condição encontrada na URG:',
         itens: [
-          'DJ 3096 - Geral de 13 kV do TR1: aberto.',
-          'DJ 3474 - Geral de 13 kV do TR2: aberto pelo disparo cruzado.',
-          'DJ 3499 - Junção: fechado automaticamente, permitindo a transferência de carga do TR1 para o TR2.',
-          'DJ 3225 - Geral de 138 kV do TR2: fechado, permitindo que o TR2 assuma a carga transferida.',
-          'DJ 3009 - Junção: fechado automaticamente, transferindo parte da carga para o TR3.',
+          'TR1 isolado após a atuação da proteção.',
+          'A carga é transferida automaticamente para os transformadores disponíveis.',
         ],
       },
       {

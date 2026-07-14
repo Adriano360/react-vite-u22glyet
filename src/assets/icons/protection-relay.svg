@@ -1,0 +1,43 @@
+<!-- Technical protection relay line icon for the Protecao training card. -->
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="42"
+  height="42"
+  viewBox="0 0 48 48"
+  fill="none"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+>
+  <path d="M9 15.5h26.5a2.5 2.5 0 0 1 2.5 2.5v19a2.5 2.5 0 0 1 -2.5 2.5h-26.5a2.5 2.5 0 0 1 -2.5 -2.5v-19a2.5 2.5 0 0 1 2.5 -2.5z" stroke="#0B2341" stroke-width="2.4" />
+  <path d="M6.5 21h31.5" stroke="#0B2341" stroke-width="2.4" />
+  <path d="M12.5 27h10v7h-10z" fill="#009E9A" fill-opacity=".18" stroke="#009E9A" stroke-width="2.4" />
+  <path d="M27.5 34h7" stroke="#0B2341" stroke-width="2.4" />
+  <path d="M12.5 38.5v4.5" stroke="#009E9A" stroke-width="2.4" />
+  <path d="M19 38.5v4.5" stroke="#009E9A" stroke-width="2.4" />
+  <path d="M25.5 38.5v4.5" stroke="#009E9A" stroke-width="2.4" />
+  <path d="M32 38.5v4.5" stroke="#009E9A" stroke-width="2.4" />
+  <path d="M13.5 5v10.5" stroke="#009E9A" stroke-width="2.4" />
+  <path d="M22 5v10.5" stroke="#009E9A" stroke-width="2.4" />
+  <path d="M30.5 5v10.5" stroke="#009E9A" stroke-width="2.4" />
+  <path d="M13.5 4.5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" stroke="#009E9A" stroke-width="2.4" />
+  <path d="M22 4.5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" stroke="#009E9A" stroke-width="2.4" />
+  <path d="M30.5 4.5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" stroke="#009E9A" stroke-width="2.4" />
+  <path d="M12.5 43m-1.75 0a1.75 1.75 0 1 0 3.5 0a1.75 1.75 0 1 0 -3.5 0" stroke="#009E9A" stroke-width="2.4" />
+  <path d="M19 43m-1.75 0a1.75 1.75 0 1 0 3.5 0a1.75 1.75 0 1 0 -3.5 0" stroke="#009E9A" stroke-width="2.4" />
+  <path d="M25.5 43m-1.75 0a1.75 1.75 0 1 0 3.5 0a1.75 1.75 0 1 0 -3.5 0" stroke="#009E9A" stroke-width="2.4" />
+  <path d="M32 43m-1.75 0a1.75 1.75 0 1 0 3.5 0a1.75 1.75 0 1 0 -3.5 0" stroke="#009E9A" stroke-width="2.4" />
+  <path d="M42 31.5v8" stroke="#0B2341" stroke-width="2.4" />
+  <path d="M38 39.5h8" stroke="#0B2341" stroke-width="2.4" />
+  <path d="M39.5 43h5" stroke="#0B2341" stroke-width="2.4" />
+  <path d="M41 46h2" stroke="#0B2341" stroke-width="2.4" />
+  <path d="M30.5 26.5l2.5 2.5l-2.5 2.5l-2.5 -2.5z" stroke="#0B2341" stroke-width="2.4" />
+  <path d="M30.5 23v2" stroke="#0B2341" stroke-width="2.4" />
+  <path d="M30.5 33v2" stroke="#0B2341" stroke-width="2.4" />
+  <path d="M26.5 29h-2" stroke="#0B2341" stroke-width="2.4" />
+  <path d="M36.5 29h-2" stroke="#0B2341" stroke-width="2.4" />
+  <path d="M10.5 18.5h.1" stroke="#0B2341" stroke-width="2.4" />
+  <path d="M34 18.5h.1" stroke="#0B2341" stroke-width="2.4" />
+  <path d="M8.5 37h.1" stroke="#0B2341" stroke-width="2.4" />
+  <path d="M35.5 37h.1" stroke="#0B2341" stroke-width="2.4" />
+</svg>

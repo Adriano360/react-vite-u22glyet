@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="TC tipo bucha em subestacao">
+  <rect width="640" height="360" fill="#f8fbfb"/>
+  <path d="M0 275h640v85H0z" fill="#e8f3f1"/>
+  <path d="M70 104h500" stroke="#9fb8bd" stroke-width="8" stroke-linecap="round"/>
+  <path d="M118 206h404" stroke="#b8c8cc" stroke-width="5" stroke-linecap="round"/>
+  <g fill="none" stroke="#7a8f96" stroke-width="7">
+    <path d="M120 104v170M270 104v170M420 104v170M520 104v170"/>
+    <path d="M98 274h444"/>
+  </g>
+  <g transform="translate(235 78)">
+    <rect x="46" y="72" width="78" height="132" rx="12" fill="#8b4a21"/>
+    <path d="M60 54h50v34H60z" fill="#6f3d1f"/>
+    <circle cx="85" cy="70" r="42" fill="none" stroke="#7c3f16" stroke-width="24"/>
+    <path d="M85 10v236" stroke="#008f8b" stroke-width="14" stroke-linecap="round"/>
+    <path d="M56 208h58l20 54H36z" fill="#c9d7d7"/>
+    <path d="M28 262h114" stroke="#78909c" stroke-width="10" stroke-linecap="round"/>
+  </g>
+  <g fill="#008f8b">
+    <circle cx="105" cy="104" r="8"/>
+    <circle cx="570" cy="104" r="8"/>
+  </g>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="TC tipo barra">
+  <rect width="640" height="360" fill="#f8fbfb"/>
+  <rect x="74" y="151" width="492" height="58" rx="12" fill="#c47b2a"/>
+  <rect x="74" y="168" width="492" height="24" fill="#e3a44c"/>
+  <g>
+    <circle cx="236" cy="180" r="98" fill="#8b4a21"/>
+    <circle cx="236" cy="180" r="57" fill="#f8fbfb" stroke="#e5eeee" stroke-width="8"/>
+    <path d="M160 118a98 98 0 0 1 152 0M158 242a98 98 0 0 0 156 0" fill="none" stroke="#6f3d1f" stroke-width="10" stroke-linecap="round" opacity=".55"/>
+  </g>
+  <g>
+    <circle cx="404" cy="180" r="98" fill="#8b4a21"/>
+    <circle cx="404" cy="180" r="57" fill="#f8fbfb" stroke="#e5eeee" stroke-width="8"/>
+    <path d="M328 118a98 98 0 0 1 152 0M326 242a98 98 0 0 0 156 0" fill="none" stroke="#6f3d1f" stroke-width="10" stroke-linecap="round" opacity=".55"/>
+  </g>
+  <text x="320" y="325" text-anchor="middle" fill="#64748b" font-family="Arial, sans-serif" font-size="22" font-weight="700">Conjunto para barras e sistemas blindados</text>
+</svg>

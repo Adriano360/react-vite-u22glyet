@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="TC tipo pedestal em subestacao">
+  <rect width="640" height="360" fill="#f8fbfb"/>
+  <path d="M0 278h640v82H0z" fill="#edf5f5"/>
+  <path d="M72 84h496" stroke="#9fb8bd" stroke-width="8" stroke-linecap="round"/>
+  <path d="M110 278h420" stroke="#78909c" stroke-width="9" stroke-linecap="round"/>
+  <g transform="translate(248 58)">
+    <path d="M72 22v64" stroke="#008f8b" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="72" cy="108" r="50" fill="none" stroke="#7c3f16" stroke-width="24"/>
+    <rect x="34" y="150" width="76" height="86" rx="16" fill="#9f5d29"/>
+    <path d="M44 166h56M44 188h56M44 210h56" stroke="#6f3d1f" stroke-width="6" stroke-linecap="round" opacity=".55"/>
+    <path d="M29 236h86l25 54H4z" fill="#c9d7d7"/>
+    <path d="M6 290h132" stroke="#78909c" stroke-width="10" stroke-linecap="round"/>
+  </g>
+  <g fill="none" stroke="#7a8f96" stroke-width="6">
+    <path d="M112 84v194M528 84v194"/>
+    <path d="M166 144v134M474 144v134"/>
+  </g>
+</svg>

@@ -1,4 +1,5 @@
 import lightLogo from '../assets/light-logo.png';
+import { BRAND } from '../constants/brand';
 import { formatDateTime } from '../utils/formatters';
 
 const navItems = ['Carteira', 'Recomendacoes', 'Mercado', 'Operar', 'Educacao'];
@@ -7,7 +8,7 @@ export default function Header({ updatedAt, searchTerm, onSearch, activeSection,
   return (
     <header className="top-shell">
       <div className="brand-lockup">
-        <img src={lightLogo} alt="Light" />
+        <img src={lightLogo} alt={BRAND.fullName} />
         <strong>Treinamento de Protecao</strong>
       </div>
 

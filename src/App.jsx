@@ -6,9 +6,28 @@ import { CertificadoView } from './components/training/CertificadoView';
 import { GestorView } from './components/training/GestorView';
 import { HomeView } from './components/training/HomeView';
 import { LoginView } from './components/training/LoginView';
+import { ProtecaoDiferencialBarrasView } from './components/training/ProtecaoDiferencialBarrasView';
 import { SimuladorView } from './components/training/SimuladorView';
+import { SiteFooter } from './components/training/SiteFooter';
 import { TrainingHeader } from './components/training/TrainingHeader';
+import { TransformadoresInstrumentosView } from './components/training/TransformadoresInstrumentosView';
 import { cenarios } from './data/cenariosProtecao';
+
+const PROTECAO_DIFERENCIAL_BARRAS_ROUTE = '/treinamento/protecao/diferencial-barras-13-8kv';
+const TRANSFORMADORES_INSTRUMENTOS_ROUTE = '/treinamento/transformadores/transformadores-instrumentos';
+const TRANSFORMADORES_TC_ROUTE = '/treinamento/transformadores/tc';
+
+function telaInicialPelaRota() {
+  if (window.location.pathname === PROTECAO_DIFERENCIAL_BARRAS_ROUTE) {
+    return 'protecao-diferencial-barras';
+  }
+
+  if ([TRANSFORMADORES_INSTRUMENTOS_ROUTE, TRANSFORMADORES_TC_ROUTE].includes(window.location.pathname)) {
+    return 'transformadores-instrumentos';
+  }
+
+  return 'home';
+}
 
 function embaralhar(lista) {
   return [...lista].sort(() => Math.random() - 0.5);
@@ -16,6 +35,13 @@ function embaralhar(lista) {
 
 function obterAlternativas(cenario) {
   return cenario?.alternativas || [];
+}
+
+function normalizarTexto(valor = '') {
+  return valor
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
 }
 
 function obterRespostaCorreta(cenario) {
@@ -49,7 +75,7 @@ export default function App() {
   const [nome, setNome] = useState(
     () => localStorage.getItem('treinamentoProtecaoNome') || ''
   );
-  const [tela, setTela] = useState('home');
+  const [tela, setTela] = useState(telaInicialPelaRota);
   const [menuAberto, setMenuAberto] = useState(false);
   const [filtroArea, setFiltroArea] = useState('Todas');
   const [cenario, setCenario] = useState(() => embaralhar(cenarios)[0]);
@@ -137,6 +163,29 @@ export default function App() {
     setSelecionada(null);
   }, [cenario]);
 
+  useEffect(() => {
+    function sincronizarTelaComRota() {
+      setTela(telaInicialPelaRota());
+    }
+
+    window.addEventListener('popstate', sincronizarTelaComRota);
+    return () => window.removeEventListener('popstate', sincronizarTelaComRota);
+  }, []);
+
+  function navegarParaTela(proximaTela) {
+    const rotasPorTela = {
+      'protecao-diferencial-barras': PROTECAO_DIFERENCIAL_BARRAS_ROUTE,
+      'transformadores-instrumentos': TRANSFORMADORES_INSTRUMENTOS_ROUTE,
+    };
+    const rota = rotasPorTela[proximaTela] || '/';
+
+    if (window.location.pathname !== rota) {
+      window.history.pushState({}, '', rota);
+    }
+
+    setTela(proximaTela);
+  }
+
   function entrar() {
     if (!nome.trim()) {
       setErroLogin('Informe o nome do operador para iniciar.');
@@ -191,8 +240,20 @@ export default function App() {
   }
 
   function selecionarTrilha(area) {
+    const areaNormalizada = normalizarTexto(area);
+
+    if (['diferencial de barras', 'protecoes diferenciais'].includes(areaNormalizada)) {
+      navegarParaTela('protecao-diferencial-barras');
+      return;
+    }
+
+    if (areaNormalizada === 'transformadores') {
+      navegarParaTela('transformadores-instrumentos');
+      return;
+    }
+
     trocarArea(area);
-    setTela('simulador');
+    navegarParaTela('simulador');
   }
 
   function responder(alternativa) {
@@ -224,7 +285,7 @@ export default function App() {
     setPontos(0);
     setSelecionada(null);
     setUsados([]);
-    setTela('home');
+    navegarParaTela('home');
     novoCenario();
   }
 
@@ -239,7 +300,7 @@ export default function App() {
     setOpcoes(embaralhar(obterAlternativas(primeiroErro)));
     setSelecionada(null);
     setUsados([primeiroErro.id]);
-    setTela('simulador');
+    navegarParaTela('simulador');
   }
 
   function sair() {
@@ -271,7 +332,7 @@ export default function App() {
         taxa={taxa}
         areas={areas}
         onSair={sair}
-        onNavigate={setTela}
+        onNavigate={navegarParaTela}
         onSelecionarTrilha={selecionarTrilha}
       />
     );
@@ -284,7 +345,7 @@ export default function App() {
         tela={tela}
         filtroArea={filtroArea}
         areas={areas}
-        setTela={setTela}
+        setTela={navegarParaTela}
         onSelecionarTrilha={selecionarTrilha}
         menuAberto={menuAberto}
         onToggleMenu={() => setMenuAberto((aberto) => !aberto)}
@@ -330,10 +391,28 @@ export default function App() {
             pontos={pontos}
             taxa={taxa}
             aprovado={aprovado}
-            onContinuar={() => setTela('simulador')}
+            onContinuar={() => navegarParaTela('simulador')}
           />
         )}
+
+        {tela === 'transformadores-instrumentos' && (
+          <TransformadoresInstrumentosView
+            onBackHome={() => navegarParaTela('home')}
+            onNextLesson={() => {
+              if (window.location.pathname !== TRANSFORMADORES_TC_ROUTE) {
+                window.history.pushState({}, '', TRANSFORMADORES_TC_ROUTE);
+              }
+              setTela('transformadores-instrumentos');
+            }}
+          />
+        )}
+
+        {tela === 'protecao-diferencial-barras' && (
+          <ProtecaoDiferencialBarrasView onBackHome={() => navegarParaTela('home')} />
+        )}
       </div>
+
+      <SiteFooter />
     </main>
   );
 }

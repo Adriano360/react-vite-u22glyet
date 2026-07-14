@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="TP convencional em subestacao">
+  <rect width="640" height="360" fill="#f8fbfb"/>
+  <path d="M0 278h640v82H0z" fill="#edf5f5"/>
+  <path d="M118 84h410" stroke="#9fb8bd" stroke-width="8" stroke-linecap="round"/>
+  <g transform="translate(236 46)">
+    <path d="M84 24v58" stroke="#0284c7" stroke-width="12" stroke-linecap="round"/>
+    <rect x="52" y="76" width="64" height="36" rx="9" fill="#d7e6e7"/>
+    <path d="M84 112v30" stroke="#0284c7" stroke-width="8"/>
+    <rect x="38" y="136" width="92" height="112" rx="18" fill="#8b4a21"/>
+    <path d="M52 158h64M52 184h64M52 210h64" stroke="#6f3d1f" stroke-width="7" stroke-linecap="round" opacity=".55"/>
+    <path d="M31 248h106l25 52H6z" fill="#c9d7d7"/>
+    <path d="M8 300h150" stroke="#78909c" stroke-width="10" stroke-linecap="round"/>
+    <path d="M128 166c54 0 80 36 80 72" fill="none" stroke="#008f8b" stroke-width="5" stroke-linecap="round"/>
+    <rect x="190" y="226" width="92" height="48" rx="11" fill="#ffffff" stroke="#cde8e5" stroke-width="3"/>
+    <text x="236" y="256" text-anchor="middle" fill="#0f172a" font-family="Arial, sans-serif" font-size="16" font-weight="800">115 V</text>
+  </g>
+  <g fill="none" stroke="#7a8f96" stroke-width="6">
+    <path d="M118 84v194M528 84v194"/>
+  </g>
+</svg>

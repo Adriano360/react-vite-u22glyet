@@ -1,1 +1,21 @@
-node_modules
+node_modules/
+dist/
+
+# Local development output
+*.log
+*.local
+
+# Environment files and installers
+.env
+.env.*
+!.env.example
+*.exe
+
+# Unrelated local workspaces
+/.agents/
+/bug-bounty-paypal-mfa/
+/huntr-audit-targets/
+/tmp/
+
+# The site uses the copy under public/images.
+/Proteção diferencial de barras 13,8 kV.jpg

@@ -10,11 +10,18 @@ const mainItems = [
     label: 'Transformadores de Instrumentos',
     icon: 'transformer',
     area: 'Transformadores',
+    target: 'transformadores-instrumentos',
   },
 ];
 
 const protectionItems = [
-  { id: 'diferencial', label: 'Diferencial de Barra', icon: 'shield', area: 'Diferencial de Barras' },
+  {
+    id: 'diferencial',
+    label: 'Diferencial de Barra',
+    icon: 'shield',
+    area: 'Diferencial de Barras',
+    target: 'protecao-diferencial-barras',
+  },
   { id: 'bloqueio-reverso', label: 'Bloqueio Reverso', icon: 'shield', area: 'Barra 13,8 kV' },
   { id: 'tipo-bloqueio', label: 'Tipo Bloqueio', icon: 'shield', area: 'Falha de Disjuntor' },
   { id: 'terra-isolada', label: 'Terra Isolada', icon: 'shield', area: 'Sobrecorrente' },

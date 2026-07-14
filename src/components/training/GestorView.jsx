@@ -18,7 +18,6 @@ export function GestorView({
   pontos,
   taxa,
   aprovado,
-  historico,
   desempenhoPorTrilha,
   recomendacao,
   erros,
@@ -32,7 +31,7 @@ export function GestorView({
       <header className="manager-heading">
         <div>
           <h2>Painel do Gestor</h2>
-          <p>Acompanhe desempenho, trilhas prioritarias e historico.</p>
+          <p>Acompanhe desempenho e trilhas prioritarias.</p>
         </div>
 
         <div className="manager-actions">
@@ -130,33 +129,6 @@ export function GestorView({
         </article>
       </section>
 
-      <section className="history-section">
-        <div className="history-heading">
-          <h3>Historico de respostas</h3>
-          <span>{historico.length} registro(s)</span>
-        </div>
-
-        {historico.length === 0 && (
-          <p className="muted-text history-empty">Nenhuma tentativa registrada.</p>
-        )}
-
-        <div className="history-list">
-          {historico.map((item, index) => (
-            <article
-              key={`${item.id}-${index}`}
-              className={item.acertou ? 'history-row ok' : 'history-row bad'}
-            >
-              <strong>{item.acertou ? 'Correto' : 'Incorreto'}</strong>
-              <p>{item.titulo}</p>
-              <div className="history-meta">
-                <span>Trilha: {item.area}</span>
-                <span>Nivel: {item.nivel}</span>
-                <span>Data: {item.data}</span>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
     </section>
   );
 }

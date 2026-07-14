@@ -69,17 +69,15 @@ export function HeroSection() {
   const activeSlideRef = useRef(0);
   const failedSlidesRef = useRef(new Set());
   const requestIdRef = useRef(0);
-  const mountedRef = useRef(true);
+  const mountedRef = useRef(false);
 
   useEffect(() => {
     activeSlideRef.current = activeSlide;
   }, [activeSlide]);
 
   useEffect(() => {
-    failedSlidesRef.current = failedSlides;
-  }, [failedSlides]);
+    mountedRef.current = true;
 
-  useEffect(() => {
     return () => {
       mountedRef.current = false;
       requestIdRef.current += 1;
@@ -90,21 +88,22 @@ export function HeroSection() {
     SLIDES.forEach((slide, index) => {
       if (index !== activeSlideRef.current) {
         decodeImage(slide.src).catch(() => {
-          // Uma falha transitória de pré-carregamento não remove o slide.
+          // Uma falha transitória no pré-carregamento não remove o slide.
         });
       }
     });
   }, []);
 
-  const markSlideAsFailed = useCallback((index) => {
-    setFailedSlides((current) => {
-      if (current.has(index)) return current;
+  const registerFailedSlide = useCallback((index) => {
+    if (failedSlidesRef.current.has(index)) {
+      return failedSlidesRef.current;
+    }
 
-      const next = new Set(current);
-      next.add(index);
-      failedSlidesRef.current = next;
-      return next;
-    });
+    const next = new Set(failedSlidesRef.current);
+    next.add(index);
+    failedSlidesRef.current = next;
+    setFailedSlides(next);
+    return next;
   }, []);
 
   const showSlide = useCallback(
@@ -129,20 +128,19 @@ export function HeroSection() {
       } catch {
         if (!mountedRef.current) return;
 
-        markSlideAsFailed(index);
-
+        const failed = registerFailedSlide(index);
         const fallback = getNextAvailableSlide(
-          index,
+          activeSlideRef.current,
           1,
-          failedSlidesRef.current
+          failed
         );
 
-        if (fallback !== index) {
+        if (fallback !== activeSlideRef.current) {
           void showSlide(fallback);
         }
       }
     },
-    [markSlideAsFailed]
+    [registerFailedSlide]
   );
 
   const moveSlide = useCallback(
@@ -177,13 +175,8 @@ export function HeroSection() {
   const currentSlide = SLIDES[activeSlide];
 
   function handleActiveImageError() {
-    markSlideAsFailed(activeSlide);
-
-    const nextIndex = getNextAvailableSlide(
-      activeSlide,
-      1,
-      failedSlidesRef.current
-    );
+    const failed = registerFailedSlide(activeSlide);
+    const nextIndex = getNextAvailableSlide(activeSlide, 1, failed);
 
     if (nextIndex !== activeSlide) {
       void showSlide(nextIndex);

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import subestacaoBanner from '../../assets/subestacao-banner.png';
 import subestacaoSlider01 from '../../assets/subestacao-slider-01.webp';
@@ -12,7 +12,7 @@ const highlights = [
   ['badge', 'Certificação com 100%'],
 ];
 
-const slides = [
+const SLIDES = [
   {
     src: subestacaoBanner,
     alt: 'Casarão e instalações da subestação utilizados no treinamento Light+',
@@ -30,54 +30,164 @@ const slides = [
   },
 ];
 
+const AUTOPLAY_DELAY = 6000;
+
+function getNextAvailableSlide(currentIndex, direction, failedSlides) {
+  for (let step = 1; step <= SLIDES.length; step += 1) {
+    const candidate =
+      (currentIndex + direction * step + SLIDES.length) % SLIDES.length;
+
+    if (!failedSlides.has(candidate)) return candidate;
+  }
+
+  return currentIndex;
+}
+
+function decodeImage(src) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+
+    image.decoding = 'async';
+    image.onload = async () => {
+      try {
+        await image.decode?.();
+      } catch {
+        // O evento load já confirmou que o arquivo foi carregado.
+      }
+      resolve();
+    };
+    image.onerror = reject;
+    image.src = src;
+  });
+}
+
 export function HeroSection() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [failedSlides, setFailedSlides] = useState(() => new Set());
 
-  const availableSlides = useMemo(
-    () => slides.map((_, index) => index).filter((index) => !failedSlides.has(index)),
-    [failedSlides]
-  );
+  const activeSlideRef = useRef(0);
+  const failedSlidesRef = useRef(new Set());
+  const requestIdRef = useRef(0);
+  const mountedRef = useRef(true);
 
   useEffect(() => {
-    if (!availableSlides.length || availableSlides.includes(activeSlide)) return;
-    setActiveSlide(availableSlides[0]);
-  }, [activeSlide, availableSlides]);
+    activeSlideRef.current = activeSlide;
+  }, [activeSlide]);
+
+  useEffect(() => {
+    failedSlidesRef.current = failedSlides;
+  }, [failedSlides]);
+
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+      requestIdRef.current += 1;
+    };
+  }, []);
+
+  useEffect(() => {
+    SLIDES.forEach((slide, index) => {
+      if (index !== activeSlideRef.current) {
+        decodeImage(slide.src).catch(() => {
+          // Uma falha transitória de pré-carregamento não remove o slide.
+        });
+      }
+    });
+  }, []);
+
+  const markSlideAsFailed = useCallback((index) => {
+    setFailedSlides((current) => {
+      if (current.has(index)) return current;
+
+      const next = new Set(current);
+      next.add(index);
+      failedSlidesRef.current = next;
+      return next;
+    });
+  }, []);
+
+  const showSlide = useCallback(
+    async (index) => {
+      if (
+        index === activeSlideRef.current ||
+        failedSlidesRef.current.has(index)
+      ) {
+        return;
+      }
+
+      const requestId = requestIdRef.current + 1;
+      requestIdRef.current = requestId;
+
+      try {
+        await decodeImage(SLIDES[index].src);
+
+        if (!mountedRef.current || requestId !== requestIdRef.current) return;
+
+        activeSlideRef.current = index;
+        setActiveSlide(index);
+      } catch {
+        if (!mountedRef.current) return;
+
+        markSlideAsFailed(index);
+
+        const fallback = getNextAvailableSlide(
+          index,
+          1,
+          failedSlidesRef.current
+        );
+
+        if (fallback !== index) {
+          void showSlide(fallback);
+        }
+      }
+    },
+    [markSlideAsFailed]
+  );
+
+  const moveSlide = useCallback(
+    (direction) => {
+      const nextIndex = getNextAvailableSlide(
+        activeSlideRef.current,
+        direction,
+        failedSlidesRef.current
+      );
+
+      void showSlide(nextIndex);
+    },
+    [showSlide]
+  );
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia(
       '(prefers-reduced-motion: reduce)'
     ).matches;
 
-    if (isPaused || prefersReducedMotion || availableSlides.length < 2) {
+    if (isPaused || prefersReducedMotion || failedSlides.size >= SLIDES.length - 1) {
       return undefined;
     }
 
-    const timer = window.setTimeout(() => {
-      const currentPosition = availableSlides.indexOf(activeSlide);
-      const nextPosition = (currentPosition + 1) % availableSlides.length;
-      setActiveSlide(availableSlides[nextPosition]);
-    }, 6000);
+    const intervalId = window.setInterval(() => {
+      moveSlide(1);
+    }, AUTOPLAY_DELAY);
 
-    return () => window.clearTimeout(timer);
-  }, [activeSlide, availableSlides, isPaused]);
+    return () => window.clearInterval(intervalId);
+  }, [failedSlides.size, isPaused, moveSlide]);
 
-  function moveSlide(direction) {
-    if (availableSlides.length < 2) return;
+  const currentSlide = SLIDES[activeSlide];
 
-    const currentPosition = availableSlides.indexOf(activeSlide);
-    const nextPosition =
-      (currentPosition + direction + availableSlides.length) % availableSlides.length;
-    setActiveSlide(availableSlides[nextPosition]);
-  }
+  function handleActiveImageError() {
+    markSlideAsFailed(activeSlide);
 
-  function handleImageError(index) {
-    setFailedSlides((current) => {
-      const next = new Set(current);
-      next.add(index);
-      return next;
-    });
+    const nextIndex = getNextAvailableSlide(
+      activeSlide,
+      1,
+      failedSlidesRef.current
+    );
+
+    if (nextIndex !== activeSlide) {
+      void showSlide(nextIndex);
+    }
   }
 
   return (
@@ -94,25 +204,18 @@ export function HeroSection() {
         }
       }}
     >
-      <div className="home-hero-media" aria-live="off">
-        {slides.map((slide, index) => (
-          <img
-            key={slide.src}
-            className={
-              index === activeSlide
-                ? 'home-hero-image active'
-                : 'home-hero-image'
-            }
-            src={slide.src}
-            alt={index === activeSlide ? slide.alt : ''}
-            aria-hidden={index !== activeSlide}
-            style={{ objectPosition: slide.position }}
-            loading="eager"
-            decoding="async"
-            onError={() => handleImageError(index)}
-          />
-        ))}
-      </div>
+      <img
+        key={currentSlide.src}
+        className="home-hero-image"
+        src={currentSlide.src}
+        alt={currentSlide.alt}
+        style={{ objectPosition: currentSlide.position }}
+        loading="eager"
+        decoding="sync"
+        fetchPriority="high"
+        draggable="false"
+        onError={handleActiveImageError}
+      />
 
       <div className="home-hero-scrim" aria-hidden="true" />
 
@@ -141,19 +244,19 @@ export function HeroSection() {
           className="home-hero-arrow previous"
           onClick={() => moveSlide(-1)}
           aria-label="Exibir imagem anterior"
-          disabled={availableSlides.length < 2}
+          disabled={failedSlides.size >= SLIDES.length - 1}
         >
           <span aria-hidden="true">‹</span>
         </button>
 
         <div className="home-hero-indicators" role="group" aria-label="Escolher imagem">
-          {slides.map((slide, index) => (
+          {SLIDES.map((slide, index) => (
             <button
               key={slide.src}
               type="button"
               className={index === activeSlide ? 'active' : ''}
-              onClick={() => setActiveSlide(index)}
-              aria-label={`Exibir imagem ${index + 1} de ${slides.length}`}
+              onClick={() => void showSlide(index)}
+              aria-label={`Exibir imagem ${index + 1} de ${SLIDES.length}`}
               aria-current={index === activeSlide ? 'true' : undefined}
               disabled={failedSlides.has(index)}
             />
@@ -165,7 +268,7 @@ export function HeroSection() {
           className="home-hero-arrow next"
           onClick={() => moveSlide(1)}
           aria-label="Exibir próxima imagem"
-          disabled={availableSlides.length < 2}
+          disabled={failedSlides.size >= SLIDES.length - 1}
         >
           <span aria-hidden="true">›</span>
         </button>

@@ -199,7 +199,8 @@
 .home-sidebar.collapsed .home-sidebar-brand small,
 .home-sidebar.collapsed .home-sidebar-item-label,
 .home-sidebar.collapsed .home-sidebar-group-title,
-.home-sidebar.collapsed .home-help-card div {
+.home-sidebar.collapsed .home-help-card div,
+.home-sidebar.collapsed .home-help-action {
   display: none;
 }
 
@@ -253,15 +254,27 @@
 }
 
 .home-help-card {
+  width: 100%;
   display: grid;
-  grid-template-columns: 34px 1fr;
-  align-items: start;
-  gap: 10px;
+  grid-template-columns: 58px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
   margin-top: auto;
-  padding: 14px;
+  padding: 13px;
   border: 1px solid rgba(255, 255, 255, 0.13);
   border-radius: 10px;
   background: rgba(0, 194, 179, 0.24);
+  color: #fff;
+  text-align: left;
+}
+
+.home-help-card:hover {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(0, 194, 179, 0.36);
+}
+
+.home-help-card > div {
+  min-width: 0;
 }
 
 .home-help-card strong,
@@ -274,6 +287,21 @@
   margin-top: 5px;
   font-size: 11px;
   line-height: 1.45;
+}
+
+.home-help-card .home-help-action {
+  grid-column: 2;
+  width: max-content;
+  margin-top: 2px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .home-sidebar.collapsed .home-help-card {

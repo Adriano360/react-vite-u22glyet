@@ -14,6 +14,8 @@ const SUGGESTED_QUESTIONS = [
   'Como funciona a proteção diferencial?',
 ];
 
+const REQUEST_TIMEOUT_MS = 35_000;
+
 function CloseIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -99,11 +101,17 @@ export function AgentAssistant({ nome, isOpen, onClose }) {
     setMessages(conversation);
     setQuestion('');
     setIsSending(true);
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(
+      () => controller.abort(),
+      REQUEST_TIMEOUT_MS
+    );
 
     try {
       const response = await fetch('/api/assistant', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({
           messages: conversation
             .filter((message) => message !== INITIAL_MESSAGE)
@@ -113,18 +121,40 @@ export function AgentAssistant({ nome, isOpen, onClose }) {
         }),
       });
 
-      const data = await response.json().catch(() => ({}));
+      const contentType = response.headers.get('content-type') || '';
+      const isJsonResponse = contentType.includes('application/json');
+      const data = isJsonResponse
+        ? await response.json().catch(() => ({}))
+        : {};
+
+      if (!isJsonResponse) {
+        throw new Error(
+          'O servidor do agente não está ativo. Abra o projeto pelo servidor Light+ e tente novamente.'
+        );
+      }
 
       if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error(
+            'O servidor do agente não está ativo. Inicie o projeto com npm run dev.'
+          );
+        }
+
         throw new Error(
           data.message ||
             'Não foi possível falar com o agente neste momento.'
         );
       }
 
+      if (typeof data.answer !== 'string' || !data.answer.trim()) {
+        throw new Error(
+          'O agente recebeu a pergunta, mas não retornou uma resposta válida. Tente novamente.'
+        );
+      }
+
       setMessages((currentMessages) => [
         ...currentMessages,
-        { role: 'assistant', content: data.answer },
+        { role: 'assistant', content: data.answer.trim() },
       ]);
     } catch (error) {
       setMessages((currentMessages) => [
@@ -132,11 +162,14 @@ export function AgentAssistant({ nome, isOpen, onClose }) {
         {
           role: 'error',
           content:
-            error.message ||
-            'O agente está temporariamente indisponível. Tente novamente.',
+            error.name === 'AbortError'
+              ? 'A resposta demorou mais que o esperado. Verifique a conexão e tente novamente.'
+              : error.message ||
+                'O agente está temporariamente indisponível. Tente novamente.',
         },
       ]);
     } finally {
+      window.clearTimeout(timeoutId);
       setIsSending(false);
       requestAnimationFrame(() => inputRef.current?.focus());
     }

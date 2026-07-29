@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { AgentAssistant, AgentAvatar } from './AgentAssistant';
 import './TrainingHeaderFix.css';
 
 const mainItems = [
@@ -88,6 +89,7 @@ export function TrainingHeader({
   onSair,
 }) {
   const iniciouMenu = useRef(false);
+  const [agentOpen, setAgentOpen] = useState(false);
 
   useEffect(() => {
     if (!iniciouMenu.current && window.innerWidth >= 1024 && !menuAberto) {
@@ -118,6 +120,11 @@ export function TrainingHeader({
   function itemAtivo(item) {
     if (item.area) return tela === 'simulador' && filtroArea === item.area;
     return tela === item.target;
+  }
+
+  function openAgent() {
+    setAgentOpen(true);
+    if (window.innerWidth < 1024) onCloseMenu();
   }
 
   return (
@@ -197,15 +204,20 @@ export function TrainingHeader({
           ))}
         </nav>
 
-        <div className="sidebar-support-card">
-          <span className="support-icon" aria-hidden="true">
-            <MenuIcon type="help" />
-          </span>
+        <button
+          type="button"
+          className="sidebar-support-card"
+          onClick={openAgent}
+          aria-haspopup="dialog"
+          tabIndex={menuAberto ? 0 : -1}
+        >
+          <AgentAvatar />
           <div>
-            <strong>Precisa de ajuda?</strong>
-            <small>Acesse o guia do curso ou fale com o suporte.</small>
+            <strong>Pergunte ao Agente Light+</strong>
+            <small>Tire dúvidas sobre o curso e sobre subestações.</small>
           </div>
-        </div>
+          <span className="support-card-action" aria-hidden="true">Conversar</span>
+        </button>
       </aside>
 
       <button
@@ -214,6 +226,12 @@ export function TrainingHeader({
         aria-label="Fechar menu lateral"
         onClick={onCloseMenu}
         tabIndex={menuAberto ? 0 : -1}
+      />
+
+      <AgentAssistant
+        nome={nome}
+        isOpen={agentOpen}
+        onClose={() => setAgentOpen(false)}
       />
     </>
   );

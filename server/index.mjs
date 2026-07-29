@@ -1,17 +1,24 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import { loadEnvFile } from 'node:process';
 import { fileURLToPath } from 'node:url';
 import express from 'express';
 import OpenAI from 'openai';
 import { createServer as createViteServer } from 'vite';
 
 const app = express();
+const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
+const projectRoot = path.resolve(currentDirectory, '..');
+const localEnvPath = path.join(projectRoot, '.env');
+
+if (!process.env.OPENAI_API_KEY && fs.existsSync(localEnvPath)) {
+  loadEnvFile(localEnvPath);
+}
+
 const isProduction = process.argv.includes('--production');
 const port = Number(process.env.PORT) || 5173;
 const host = process.env.HOST || '0.0.0.0';
-const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
-const projectRoot = path.resolve(currentDirectory, '..');
 const rateLimits = new Map();
 
 const AGENT_INSTRUCTIONS = `
@@ -156,8 +163,61 @@ function isRateLimited(identifier) {
   return existing.count > maxRequests;
 }
 
+function hasConfiguredApiKey() {
+  const apiKey = process.env.OPENAI_API_KEY?.trim();
+
+  return Boolean(
+    apiKey &&
+      apiKey !== 'cole_sua_chave_aqui' &&
+      apiKey.startsWith('sk-')
+  );
+}
+
+function getPublicAgentError(error) {
+  const status = Number(error?.status);
+  const errorCode = error?.code || error?.error?.code;
+
+  if (status === 401) {
+    return {
+      status: 503,
+      code: 'invalid_api_key',
+      message:
+        'A chave da IA não foi aceita. Verifique a OPENAI_API_KEY configurada no servidor.',
+    };
+  }
+
+  if (status === 403 || status === 404) {
+    return {
+      status: 503,
+      code: 'model_unavailable',
+      message:
+        'O modelo do Agente Light+ não está disponível para este projeto da OpenAI. Verifique a permissão e a variável OPENAI_MODEL.',
+    };
+  }
+
+  if (status === 429 || errorCode === 'insufficient_quota') {
+    return {
+      status: 503,
+      code: 'openai_limit',
+      message:
+        'O limite de uso da IA foi atingido. Verifique os créditos e os limites do projeto da OpenAI.',
+    };
+  }
+
+  return {
+    status: 502,
+    code: 'agent_unavailable',
+    message:
+      'O Agente Light+ não conseguiu responder agora. Verifique a conexão do servidor e tente novamente.',
+  };
+}
+
 app.disable('x-powered-by');
 app.use(express.json({ limit: '32kb' }));
+
+app.get('/api/assistant/status', (_request, response) => {
+  response.json({ configured: hasConfiguredApiKey() });
+});
 
 app.post('/api/assistant', async (request, response) => {
   const messages = sanitizeMessages(request.body?.messages);
@@ -182,8 +242,9 @@ app.post('/api/assistant', async (request, response) => {
     });
   }
 
-  if (!process.env.OPENAI_API_KEY) {
+  if (!hasConfiguredApiKey()) {
     return response.status(503).json({
+      code: 'missing_api_key',
       message:
         'O Agente Light+ ainda precisa da chave de IA no servidor. Configure OPENAI_API_KEY para ativar as respostas.',
     });
@@ -205,7 +266,11 @@ app.post('/api/assistant', async (request, response) => {
     .join('\n\n');
 
   try {
-    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const client = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+      maxRetries: 1,
+      timeout: 30_000,
+    });
     const modelResponse = await client.responses.create({
       model: process.env.OPENAI_MODEL || 'gpt-5.6-terra',
       instructions: AGENT_INSTRUCTIONS,
@@ -228,10 +293,11 @@ app.post('/api/assistant', async (request, response) => {
     return response.json({ answer });
   } catch (error) {
     console.error('Agent request failed:', error?.status || error?.name || 'error');
+    const publicError = getPublicAgentError(error);
 
-    return response.status(502).json({
-      message:
-        'O Agente Light+ não conseguiu responder agora. Verifique a configuração da IA e tente novamente.',
+    return response.status(publicError.status).json({
+      code: publicError.code,
+      message: publicError.message,
     });
   }
 });

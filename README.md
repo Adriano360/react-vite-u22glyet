@@ -32,13 +32,29 @@ npm run dev
 Abra o endereço exibido pelo Vite no terminal, normalmente
 `http://localhost:5173`.
 
+## Ativar o Agente Light+
+
+O botão **Pergunte ao Agente Light+** abre uma conversa para dúvidas sobre o
+curso e sobre subestações. A integração usa um endpoint no servidor para não
+expor a chave da IA no navegador do aluno.
+
+1. Copie `.env.example` para `.env`.
+2. Preencha `OPENAI_API_KEY` com a chave do projeto na OpenAI.
+3. Execute `npm run dev`.
+
+Nunca coloque a chave em um nome iniciado por `VITE_` e nunca envie o arquivo
+`.env` para o GitHub.
+
+O modelo pode ser alterado pela variável `OPENAI_MODEL`. O padrão do projeto é
+`gpt-5.6-terra`, equilibrando qualidade e custo.
+
 ## Build
 
 ```bash
 npm run build
 ```
 
-Para visualizar o build de produção:
+Para gerar e visualizar o build com o endpoint do agente:
 
 ```bash
 npm run preview

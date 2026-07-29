@@ -1,12 +1,14 @@
 {
   "scripts": {
-    "start": "vite",
-    "dev": "vite",
+    "start": "node server/index.mjs",
+    "dev": "node server/index.mjs",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "npm run build && node server/index.mjs --production"
   },
   "dependencies": {
     "@vitejs/plugin-react": "4.6.0",
+    "express": "^5.1.0",
+    "openai": "^5.12.2",
     "vite": "7.3.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

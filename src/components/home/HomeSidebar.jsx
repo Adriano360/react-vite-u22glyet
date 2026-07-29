@@ -1,4 +1,8 @@
 import { useEffect, useState } from 'react';
+import {
+  AgentAssistant,
+  AgentAvatar,
+} from '../training/AgentAssistant';
 import { HomeIcon } from './HomeIcon';
 import './HomeSidebar.css';
 
@@ -84,10 +88,12 @@ export function HomeSidebar({
   tela,
   filtroArea,
   areas,
+  nome,
   onNavigate,
 }) {
   const collapsed = !isMobile && isCollapsed;
   const [protectionOpen, setProtectionOpen] = useState(false);
+  const [agentOpen, setAgentOpen] = useState(false);
 
   useEffect(() => {
     const hasActiveProtection = protectionItems.some(
@@ -126,15 +132,16 @@ export function HomeSidebar({
   }
 
   return (
-    <aside
-      id="main-sidebar"
-      className={[
-        'home-sidebar',
-        isOpen ? 'open' : '',
-        collapsed ? 'collapsed' : '',
-      ].filter(Boolean).join(' ')}
-      aria-label="Navegação principal"
-    >
+    <>
+      <aside
+        id="main-sidebar"
+        className={[
+          'home-sidebar',
+          isOpen ? 'open' : '',
+          collapsed ? 'collapsed' : '',
+        ].filter(Boolean).join(' ')}
+        aria-label="Navegação principal"
+      >
       <div className="home-sidebar-brand">
         <strong>Light<span>+</span></strong>
         <small>Treinamento Operacional</small>
@@ -183,13 +190,28 @@ export function HomeSidebar({
         {renderItems(finalItems)}
       </nav>
 
-      <div className="home-help-card">
-        <span aria-hidden="true"><HomeIcon name="help" /></span>
-        <div>
-          <strong>Precisa de ajuda?</strong>
-          <small>Acesse o guia do curso ou fale com o suporte.</small>
-        </div>
-      </div>
-    </aside>
+        <button
+          type="button"
+          className="home-help-card"
+          onClick={() => setAgentOpen(true)}
+          aria-haspopup="dialog"
+          title={collapsed ? 'Pergunte ao Agente Light+' : undefined}
+          aria-label={collapsed ? 'Pergunte ao Agente Light+' : undefined}
+        >
+          <AgentAvatar />
+          <div>
+            <strong>Pergunte ao Agente Light+</strong>
+            <small>Tire dúvidas sobre o curso e sobre subestações.</small>
+          </div>
+          <span className="home-help-action" aria-hidden="true">Conversar</span>
+        </button>
+      </aside>
+
+      <AgentAssistant
+        nome={nome}
+        isOpen={agentOpen}
+        onClose={() => setAgentOpen(false)}
+      />
+    </>
   );
 }

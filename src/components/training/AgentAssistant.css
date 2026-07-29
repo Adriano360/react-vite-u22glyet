@@ -110,9 +110,9 @@
   left: 50%;
   width: auto;
   max-width: none;
-  height: 181%;
+  height: 135%;
   display: block;
-  transform: translate(-22%, -43%);
+  transform: translate(-22%, -38%);
   user-select: none;
 }
 

@@ -84,6 +84,7 @@ export function MainLayout({
         tela={tela}
         filtroArea={filtroArea}
         areas={areas}
+        nome={nome}
         onNavigate={handleNavigate}
       />
 

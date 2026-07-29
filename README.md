@@ -42,6 +42,10 @@ expor a chave da IA no navegador do aluno.
 2. Preencha `OPENAI_API_KEY` com a chave do projeto na OpenAI.
 3. Execute `npm run dev`.
 
+O servidor carrega o arquivo `.env` automaticamente ao iniciar. Em uma
+hospedagem, cadastre `OPENAI_API_KEY` como variável secreta no painel do
+provedor e execute a aplicação com `npm start`.
+
 Nunca coloque a chave em um nome iniciado por `VITE_` e nunca envie o arquivo
 `.env` para o GitHub.
 

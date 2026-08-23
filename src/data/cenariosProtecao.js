@@ -20,32 +20,41 @@ export const cenarios = [
     alarme: 'Diferencial do transformador atuado',
     descricao:
       'O relé 87T atuou indicando possível defeito interno no transformador, seguido de bloqueio pelo 86T.',
-    pergunta: 'Qual deve ser a primeira conduta operacional segura?',
+    pergunta:
+      'A atuação do 87T, seguida do bloqueio pelo 86T, indica que a corrente medida nos TCs de alta e de baixa tensão do TR1 não fechou dentro da margem de restrição percentual do relé diferencial. Diante disso, qual é a interpretação tecnicamente correta e a conduta operacional adequada?',
     respostaCorretaId: 'a',
     alternativas: [
       {
         id: 'a',
-        texto: 'Manter o transformador isolado, registrar a atuação e comunicar o despacho.',
-        feedback: 'Correto. A atuação diferencial exige isolamento, registro e comunicação antes de qualquer recomposição.',
+        texto:
+          'A diferença acima da margem de restrição aponta falta dentro da zona diferencial, entre os TCs de AT e BT; o transformador deve permanecer isolado e bloqueado, com os relés registrados, até inspeção e liberação técnica.',
+        feedback:
+          'Correto. O 87T é proteção unitária: sua zona vai de TC a TC, e uma diferença fora da margem de restrição indica falta interna, exigindo isolamento até diagnóstico.',
       },
       {
         id: 'b',
-        texto: 'Resetar o 86T e fechar novamente o disjuntor de alta.',
-        feedback: 'Inseguro. O bloqueio 86T não deve ser rearmado sem identificação da causa e autorização.',
+        texto:
+          'Como o inrush de energização também gera diferença de corrente entre os enrolamentos, a atuação pode ser normalizada assim que a corrente diferencial retornar a zero, sem necessidade de inspeção.',
+        feedback:
+          'Incorreto. O relé 87T usa restrição harmônica justamente para não atuar por inrush; se atuou e bloqueou por 86T, a causa mais provável é falta real, não energização.',
       },
       {
         id: 'c',
-        texto: 'Transferir carga e religar o transformador sem inspeção.',
-        feedback: 'Inseguro. O transformador deve permanecer isolado até inspeção e liberação técnica.',
+        texto:
+          'A atuação decorre necessariamente de erro de relação nos TCs de neutro do aterramento, sendo suficiente corrigir a relação de transformação antes de recompor o TR1.',
+        feedback:
+          'Incorreto. Erro de TC pode gerar diferencial espúria, mas não se confirma isso sem investigação; presumir a causa sem inspeção é inseguro.',
       },
       {
         id: 'd',
-        texto: 'Aumentar o tape para compensar a tensão.',
-        feedback: 'Incorreto. Ajuste de tape não trata uma atuação diferencial.',
+        texto:
+          'Por se tratar de proteção de retaguarda, a atuação do 87T dispensa inspeção interna, bastando confirmar a leitura do relé de sobrecorrente 51 antes de religar.',
+        feedback:
+          'Incorreto. O 87T é proteção principal (unitária) do transformador, não retaguarda; a inspeção interna é obrigatória antes de qualquer recomposição.',
       },
     ],
     explicacao:
-      'Atuação diferencial é grave. O transformador não deve ser religado sem análise técnica, inspeção e autorização.',
+      'O 87T compara as correntes de entrada e saída do transformador dentro de sua zona diferencial. Uma diferença acima da margem de restrição, com bloqueio confirmado pelo 86T, indica falta interna real — não deve ser confundida com inrush (contido por restrição harmônica) nem tratada como erro presumido de instrumentação.',
     checklist: [
       'Registrar relés atuados.',
       'Confirmar abertura dos disjuntores.',
@@ -74,32 +83,40 @@ export const cenarios = [
     descricao:
       'O relé F.51H atuou por sobrecorrente de fase, indicando sobrecarga severa ou curto-circuito entre fases.',
     pergunta:
-      'O que o mantenedor deve verificar antes de qualquer tentativa de normalização?',
+      'O F.51H atuou por sobrecorrente de fase no transformador, com temporização coordenada em relação às proteções dos alimentadores da barra secundária. Qual conclusão técnica está correta sobre essa atuação?',
     respostaCorretaId: 'a',
     alternativas: [
       {
         id: 'a',
-        texto: 'Verificar relés atuados, condição dos disjuntores gerais e possível defeito no transformador ou na barra.',
-        feedback: 'Correto. A causa deve ser entendida antes de qualquer tentativa de recomposição.',
+        texto:
+          'Por ser proteção de retaguarda temporizada, o F.51H também pode atuar por uma falta não eliminada por um alimentador (falha de disjuntor ou de proteção primária), não apenas por defeito interno no transformador; por isso a causa deve ser investigada nos disjuntores gerais e nos alimentadores antes de normalizar.',
+        feedback:
+          'Correto. A coordenação temporizada existe para que o F.51H sirva de retaguarda a faltas nos alimentadores, além de proteger o próprio transformador.',
       },
       {
         id: 'b',
-        texto: 'Fechar imediatamente o disjuntor geral para testar o circuito.',
-        feedback: 'Inseguro. Fechamento de teste pode agravar uma falta ainda presente.',
+        texto:
+          'Como o relé está instalado no transformador, a atuação só pode ser causada por defeito interno, sendo desnecessário verificar os alimentadores da barra secundária.',
+        feedback:
+          'Incorreto. A localização física do TC não limita a zona de retaguarda; o F.51H protege também contra faltas não eliminadas nos alimentadores.',
       },
       {
         id: 'c',
-        texto: 'Desbloquear o 86-2 sem verificar a causa.',
-        feedback: 'Inseguro. O bloqueio existe para impedir recomposição sem diagnóstico.',
+        texto:
+          'A temporização do F.51H serve apenas para evitar disparo por partida de motores, sem qualquer relação com seletividade em relação às proteções dos alimentadores.',
+        feedback:
+          'Incorreto. A temporização também garante seletividade: o F.51H deve atuar depois das proteções dos alimentadores, dando tempo para que elas eliminem a falta primeiro.',
       },
       {
         id: 'd',
-        texto: 'Transferir toda a carga para o mesmo transformador atuado.',
-        feedback: 'Incorreto. O transformador atuado deve ser avaliado antes de receber carga.',
+        texto:
+          'Uma atuação temporizada de sobrecorrente de fase indica curto-circuito trifásico franco próximo aos terminais do transformador, descartando faltas fase-fase distantes na rede secundária.',
+        feedback:
+          'Incorreto. A função de sobrecorrente de fase não distingue localização ou tipo específico de falta; qualquer sobrecorrente de fase acima do ajuste, por tempo suficiente, provoca a atuação.',
       },
     ],
     explicacao:
-      'A proteção de sobrecorrente do transformador atua como segunda linha. Pode indicar falha em alimentador, barra ou no próprio transformador.',
+      'O F.51H funciona como retaguarda temporizada: protege o transformador e também cobre faltas nos alimentadores que a proteção primária não eliminou dentro do tempo esperado. A coordenação de tempo garante seletividade entre os níveis de proteção.',
     checklist: [
       'Conferir F.51H.',
       'Conferir F.86-2.',
@@ -127,32 +144,41 @@ export const cenarios = [
     alarme: 'Sobrecorrente de terra',
     descricao:
       'A proteção indicou defeito fase-terra no lado de baixa tensão do transformador.',
-    pergunta: 'Qual interpretação técnica é mais adequada?',
+    pergunta:
+      'A proteção indicou defeito fase-terra no lado de baixa tensão do transformador, com possível atuação tanto do F.51G quanto do F.51ZN. Qual é a diferença técnica entre essas duas funções e o que isso implica para a análise da ocorrência?',
     respostaCorretaId: 'a',
     alternativas: [
       {
         id: 'a',
-        texto: 'Pode haver falha de primeira linha; a proteção do transformador atuou como retaguarda.',
-        feedback: 'Correto. A atuação pode indicar que a proteção principal não eliminou a falta.',
+        texto:
+          'O F.51G normalmente mede a corrente residual formada pelos TCs de fase, enquanto o F.51ZN mede diretamente a corrente no neutro aterrado do transformador; identificar qual das duas atuou ajuda a confirmar se a falta está mais próxima do secundário do transformador ou distribuída na rede de baixa.',
+        feedback:
+          'Correto. Diferenciar a origem do sinal (residual de fase versus neutro do transformador) orienta a investigação sobre a provável localização da falta.',
       },
       {
         id: 'b',
-        texto: 'É sempre defeito no lado de 138 kV.',
-        feedback: 'Incorreto. A indicação descrita está relacionada ao lado de baixa tensão.',
+        texto:
+          'F.51G e F.51ZN são exatamente a mesma função com nomes diferentes, portanto não importa qual delas atuou para a análise da ocorrência.',
+        feedback:
+          'Incorreto. São grandezas medidas de formas distintas (residual de fase versus neutro do transformador); a distinção é relevante para localizar a falta.',
       },
       {
         id: 'c',
-        texto: 'É ocorrência normal e não precisa de registro.',
-        feedback: 'Incorreto. Toda atuação de proteção deve ser registrada.',
+        texto:
+          'A atuação de qualquer uma dessas funções indica obrigatoriamente falta no enrolamento de alta tensão do transformador, já que ambas dependem do aterramento do neutro de 138 kV.',
+        feedback:
+          'Incorreto. O cenário descreve o lado de baixa tensão; essas funções de terra estão associadas à malha de baixa, não ao neutro de 138 kV.',
       },
       {
         id: 'd',
-        texto: 'Deve-se religar todos os alimentadores imediatamente.',
-        feedback: 'Inseguro. Religamento sem diagnóstico pode restabelecer a falta.',
+        texto:
+          'Como se trata de retaguarda, a atuação dessas funções pode ser desconsiderada sempre que a proteção principal dos alimentadores não tiver sinalizado nenhuma atuação.',
+        feedback:
+          'Inseguro. A ausência de sinalização na proteção principal não descarta falta real; pode indicar falha da proteção primária, justamente o cenário em que a retaguarda deve atuar.',
       },
     ],
     explicacao:
-      'F.51G ou F.51ZN pode atuar para defeito fase-terra na baixa quando a proteção principal não elimina a falta.',
+      'F.51G (residual de fase) e F.51ZN (neutro do transformador) são medições distintas que, associadas ao esquema de aterramento e à topologia da rede de baixa tensão, ajudam a estimar a localização provável de uma falta fase-terra não eliminada pela proteção primária.',
     checklist: [
       'Identificar se atuou F.51G ou F.51ZN.',
       'Verificar disjuntores gerais.',
@@ -180,32 +206,41 @@ export const cenarios = [
     alarme: 'Atuação instantânea',
     descricao:
       'Um alimentador de 13,8 kV desarmou por atuação instantânea de fase/neutro.',
-    pergunta: 'Qual ação evita agravamento da ocorrência?',
+    pergunta:
+      'O alimentador desarmou pela unidade instantânea (50/50N), sem que nenhum religamento automático fosse tentado. Do ponto de vista de coordenação de proteção, o que essa ausência de religamento sugere sobre a lógica do esquema?',
     respostaCorretaId: 'a',
     alternativas: [
       {
         id: 'a',
-        texto: 'Bloquear novas tentativas indevidas, verificar a atuação e aguardar orientação operacional.',
-        feedback: 'Correto. A unidade instantânea pode indicar curto de maior intensidade.',
+        texto:
+          'É provável que a lógica de religamento (F.79) tenha sido programada para não atuar após disparo pela unidade instantânea de maior magnitude, evitando religar sobre uma falta de intensidade elevada; por isso deve-se aguardar orientação antes de qualquer manobra.',
+        feedback:
+          'Correto. É comum bloquear o religamento automático quando o disparo vem de unidades instantâneas de alta magnitude, justamente para não repetir o fechamento sobre um defeito severo.',
       },
       {
         id: 'b',
-        texto: 'Forçar três religamentos manuais seguidos.',
-        feedback: 'Inseguro. Tentativas repetidas podem danificar equipamentos.',
+        texto:
+          'A ausência de religamento indica falha do relé 79, que deve ser substituído imediatamente antes de qualquer outra verificação.',
+        feedback:
+          'Incorreto. Presumir falha do relé sem verificar a lógica e os permissivos programados é prematuro e pode levar a uma troca desnecessária.',
       },
       {
         id: 'c',
-        texto: 'Aumentar o ajuste do relé para evitar novo trip.',
-        feedback: 'Incorreto. Ajustes de proteção não devem ser alterados como resposta operacional imediata.',
+        texto:
+          'Toda atuação da unidade instantânea 50/50N é, por definição, seguida de religamento automático obrigatório, já que se trata de proteção primária do alimentador.',
+        feedback:
+          'Incorreto. Não existe essa obrigatoriedade; o religamento é uma função configurável e pode ser bloqueado justamente para disparos de alta magnitude.',
       },
       {
         id: 'd',
-        texto: 'Ignorar porque toda falta em LDA é transitória.',
-        feedback: 'Incorreto. Nem toda falta em alimentador é transitória.',
+        texto:
+          'A ausência de religamento significa que a proteção 50/50N está desabilitada e que o desarme ocorreu por outra função não identificada.',
+        feedback:
+          'Incorreto. O enunciado já identifica a função atuada (50/50N); a ausência de religamento é uma característica da lógica de religamento, não evidência de proteção desabilitada.',
       },
     ],
     explicacao:
-      'A unidade 50/50N atua rápido para curtos de maior intensidade. Religamento sem critério pode danificar equipamentos.',
+      'Esquemas de religamento automático costumam ser configurados para não religar após disparos por unidades instantâneas de alta magnitude, reduzindo o risco de fechar o disjuntor sobre uma falta permanente severa. A ausência de religamento, nesse contexto, é esperada e não indica falha do relé.',
     checklist: [
       'Anotar fase/neutro atuado.',
       'Confirmar posição do disjuntor.',
@@ -233,32 +268,41 @@ export const cenarios = [
     alarme: 'Sobrecorrente temporizada',
     descricao:
       'O alimentador atuou por função temporizada, indicando corrente elevada por tempo superior ao ajuste.',
-    pergunta: 'Qual informação deve ser priorizada no registro da ocorrência?',
+    pergunta:
+      'Ao registrar a atuação temporizada do 51/51N, qual conjunto de dados é indispensável para que a equipe de proteção avalie corretamente a seletividade entre esse alimentador e os demais níveis de proteção da subestação?',
     respostaCorretaId: 'a',
     alternativas: [
       {
         id: 'a',
-        texto: 'Relé atuado, fase envolvida, horário, carga e condição do religamento.',
-        feedback: 'Correto. Esses dados ajudam a avaliar seletividade, carga e origem provável.',
+        texto:
+          'Corrente de atuação, tempo decorrido até o desarme, fase(s) envolvida(s) e comparação com a curva tempo x corrente ajustada, além da atuação (ou não) de proteções a montante e a jusante no mesmo intervalo.',
+        feedback:
+          'Correto. Só é possível avaliar seletividade comparando a curva ajustada do relé com os dados reais da ocorrência e a resposta das demais proteções envolvidas.',
       },
       {
         id: 'b',
-        texto: 'Somente o nome da subestação.',
-        feedback: 'Incompleto. O registro precisa identificar a atuação e as condições da ocorrência.',
+        texto:
+          'Basta o horário da ocorrência, pois a curva tempo x corrente do relé pode ser obtida posteriormente sem relação com o evento registrado.',
+        feedback:
+          'Incompleto. Sem os dados de corrente e tempo do evento específico, não é possível verificar se a atuação seguiu a curva ajustada.',
       },
       {
         id: 'c',
-        texto: 'Apenas informar que o disjuntor abriu.',
-        feedback: 'Incompleto. A abertura do disjuntor não explica a função atuada nem o contexto.',
+        texto:
+          'A seletividade é avaliada exclusivamente pelo ajuste de pickup do relé, sendo dispensável verificar o tempo decorrido até o desarme.',
+        feedback:
+          'Incompleto. Coordenação tempo x corrente depende tanto do pickup quanto do tempo de atuação; ignorar o tempo inviabiliza a análise de seletividade.',
       },
       {
         id: 'd',
-        texto: 'Registrar somente depois de normalizar tudo.',
-        feedback: 'Inseguro. O registro deve acompanhar a ocorrência para apoiar a decisão operacional.',
+        texto:
+          'Como o alimentador é o nível mais baixo da hierarquia de proteção, não há necessidade de verificar a atuação das proteções a montante durante o registro.',
+        feedback:
+          'Incorreto. Verificar se as proteções a montante permaneceram estáveis é parte essencial da confirmação de seletividade.',
       },
     ],
     explicacao:
-      'O registro completo ajuda o despacho e a manutenção a entenderem seletividade, carga e possível origem do defeito.',
+      'A avaliação de seletividade em sobrecorrente temporizada depende da curva tempo x corrente ajustada, dos dados reais de corrente/tempo do evento e da confirmação de que as proteções a montante permaneceram estáveis enquanto a proteção correta atuou.',
     checklist: [
       'Registrar horário.',
       'Registrar função atuada.',
@@ -286,32 +330,41 @@ export const cenarios = [
     alarme: 'Falha de disjuntor',
     descricao:
       'A proteção do alimentador atuou, mas o disjuntor não abriu corretamente. O esquema de falha de disjuntor foi iniciado.',
-    pergunta: 'O que a atuação do 50/62BF pode provocar?',
+    pergunta:
+      'O esquema de falha de disjuntor foi iniciado porque a proteção do alimentador atuou, mas a corrente de falta não foi extinta dentro do tempo esperado. Sobre a lógica de atuação do 50/62BF, qual afirmação está tecnicamente correta?',
     respostaCorretaId: 'a',
     alternativas: [
       {
         id: 'a',
-        texto: 'Atuação do 86-3 e desenergização da seção de barra referente ao disjuntor.',
-        feedback: 'Correto. O esquema retira a seção de barra para eliminar a falta não eliminada pelo disjuntor.',
+        texto:
+          'O elemento de sobrecorrente (50BF) permanece sensibilizado enquanto a corrente de falta persistir; se, ao final da temporização do 62BF, a corrente ainda estiver presente, isso confirma que o disjuntor não interrompeu a falta, disparando o 86-3 para desenergizar a seção de barra.',
+        feedback:
+          'Correto. A lógica combina detecção de corrente persistente (50BF) com temporização (62BF) para confirmar a falha real de abertura antes de atuar sobre a seção de barra.',
       },
       {
         id: 'b',
-        texto: 'Somente acendimento de lâmpada no painel.',
-        feedback: 'Incorreto. A falha de disjuntor pode comandar desligamentos de retaguarda.',
+        texto:
+          'O 62BF temporiza de forma independente da corrente de falta, disparando o 86-3 sempre que a proteção do alimentador atua, mesmo que o disjuntor tenha aberto corretamente.',
+        feedback:
+          'Incorreto. O esquema depende da persistência da corrente detectada pelo 50BF; se o disjuntor abre corretamente, a corrente cessa e o 62BF não completa a temporização.',
       },
       {
         id: 'c',
-        texto: 'Fechamento automático do disjuntor.',
-        feedback: 'Incorreto. O esquema atua para eliminar a falta, não para fechar o disjuntor.',
+        texto:
+          'A atuação do 86-3 ocorre imediatamente após o comando de abertura do disjuntor do alimentador, sem qualquer temporização adicional do 62BF.',
+        feedback:
+          'Incorreto. Existe uma temporização deliberada (62BF) para dar tempo ao disjuntor de abrir normalmente antes de acionar a retaguarda de barra.',
       },
       {
         id: 'd',
-        texto: 'Bloqueio apenas do religador 79.',
-        feedback: 'Incompleto. A lógica envolve bloqueio/abertura pela seção de barra.',
+        texto:
+          'O esquema de falha de disjuntor é acionado por uma segunda atuação manual do operador, não fazendo parte da lógica automática de proteção.',
+        feedback:
+          'Incorreto. O esquema é inteiramente automático, disparado pela combinação de sobrecorrente persistente e temporização, sem depender de ação manual.',
       },
     ],
     explicacao:
-      'Na falha de disjuntor, a proteção retira a seção de barra para eliminar o defeito que o disjuntor não eliminou.',
+      'A lógica de falha de disjuntor combina um elemento de sobrecorrente (50BF) que confirma a persistência da corrente de falta com uma temporização (62BF) que dá tempo ao disjuntor de operar normalmente. Só se a corrente persistir além desse tempo é que o 86-3 desenergiza a seção de barra como retaguarda.',
     checklist: [
       'Confirmar falha de abertura.',
       'Confirmar 50/62BF.',
@@ -339,32 +392,41 @@ export const cenarios = [
     alarme: 'Neutro + falha de disjuntor',
     descricao:
       'O disjuntor 33 teve atuação de 50N e, por não eliminar a falta adequadamente, houve atuação do esquema 50/62BF.',
-    pergunta: 'Qual sequência representa melhor a lógica da ocorrência?',
+    pergunta:
+      'O disjuntor 33 apresentou atuação de 50N (instantânea de neutro) seguida de 50/62BF. Comparando com uma hipotética atuação de 51N (temporizada de neutro) no mesmo ponto, qual é a implicação técnica de a proteção ter atuado pela unidade instantânea?',
     respostaCorretaId: 'a',
     alternativas: [
       {
         id: 'a',
-        texto: 'Defeito à terra no alimentador, falha na abertura do disjuntor e desligamento da seção pelo 86-3.',
-        feedback: 'Correto. Essa é a sequência esperada para 50N seguido de falha de disjuntor.',
+        texto:
+          'A atuação pela unidade instantânea de neutro sugere uma corrente de falta à terra de magnitude elevada, tipicamente associada a defeito próximo ao disjuntor; combinada à falha de abertura, reforça a necessidade de tratar a ocorrência como severa antes de qualquer tentativa de normalização.',
+        feedback:
+          'Correto. Unidades instantâneas costumam estar ajustadas para faltas de maior corrente/proximidade; junto com a falha de disjuntor, isso indica uma ocorrência de maior severidade.',
       },
       {
         id: 'b',
-        texto: 'Defeito interno no transformador com atuação do 87T.',
-        feedback: 'Incorreto. A lógica descrita envolve alimentador e falha de disjuntor.',
+        texto:
+          'Não há diferença técnica relevante entre 50N e 51N atuarem, pois ambas indicam exatamente a mesma magnitude e localização de falta.',
+        feedback:
+          'Incorreto. A unidade instantânea (50N) e a temporizada (51N) costumam ter ajustes e propósitos de coordenação diferentes, e a magnitude típica associada a cada uma não é a mesma.',
       },
       {
         id: 'c',
-        texto: 'Subfrequência sistêmica com corte automático de carga.',
-        feedback: 'Incorreto. Subfrequência não corresponde às funções 50N e 50/62BF.',
+        texto:
+          'A atuação pela unidade instantânea descarta qualquer possibilidade de falha do disjuntor, já que 50N e 62BF não podem operar em sequência.',
+        feedback:
+          'Incorreto. É justamente a sequência 50N seguido de 62BF que caracteriza a falha de abertura descrita no cenário.',
       },
       {
         id: 'd',
-        texto: 'Falha apenas de lâmpada de sinalização do disjuntor.',
-        feedback: 'Incorreto. Houve atuação de proteção, não apenas falha de sinalização.',
+        texto:
+          'Como o 50N é uma função de retaguarda de barra, sua atuação já implica diretamente na abertura do 86-3, independentemente do funcionamento do disjuntor 33.',
+        feedback:
+          'Incorreto. O 50N é a proteção primária do próprio disjuntor 33; o 86-3 só atua depois da confirmação de falha de abertura pelo esquema 62BF.',
       },
     ],
     explicacao:
-      '50N indica falta à terra/neutro. Se o disjuntor não abre, o 62BF temporiza e comanda o bloqueio/abertura pela seção de barra.',
+      '50N (instantâneo) costuma estar ajustado para faltas de maior corrente, geralmente mais próximas ou de maior severidade, ao contrário do 51N (temporizado), usado para seletividade com esquemas a jusante. A sequência 50N + 62BF confirma que o disjuntor 33 não eliminou uma falta severa, levando à atuação de retaguarda pelo 86-3.',
     checklist: [
       'Confirmar 50N no disjuntor.',
       'Confirmar 50/62BF.',
@@ -392,32 +454,41 @@ export const cenarios = [
     alarme: 'Religamento automático executado',
     descricao:
       'A LDA sofreu defeito transitório e o relé F.79 iniciou ciclo de religamento.',
-    pergunta: 'Qual característica é esperada para LDA de 13,8 kV?',
+    pergunta:
+      'O F.79 executou um ciclo de religamento após defeito transitório na LDA. Por que, tipicamente, o primeiro tempo morto (dead time) de um religamento é mais curto que o segundo, em esquemas de múltiplos religamentos?',
     respostaCorretaId: 'a',
     alternativas: [
       {
         id: 'a',
-        texto: 'Dois religamentos temporizados, normalmente com tempos diferentes.',
-        feedback: 'Correto. Alimentadores aéreos costumam ter ciclos temporizados definidos.',
+        texto:
+          'Defeitos transitórios de curta duração costumam se autoextinguir rapidamente, então a primeira tentativa usa tempo morto curto; caso a falta persista, tempos mortos maiores nas tentativas seguintes dão mais chance de dissipação do arco, evitando religamentos sucessivos sobre uma falta ainda presente.',
+        feedback:
+          'Correto. O escalonamento dos tempos mortos busca equilibrar rapidez na recomposição de faltas transitórias curtas com segurança contra faltas mais persistentes.',
       },
       {
         id: 'b',
-        texto: 'Religamento infinito até a carga voltar.',
-        feedback: 'Incorreto. O religamento deve ter ciclos limitados e parametrizados.',
+        texto:
+          'O tempo morto é sempre igual entre as tentativas, pois o F.79 não permite variação de tempos dentro do mesmo ciclo de religamento.',
+        feedback:
+          'Incorreto. Esquemas de múltiplos religamentos tipicamente têm tempos mortos configuráveis e diferentes entre as tentativas.',
       },
       {
         id: 'c',
-        texto: 'Nenhum religamento pode existir em LDA.',
-        feedback: 'Incorreto. O religamento automático é comum em alimentadores aéreos.',
+        texto:
+          'Tempos mortos mais curtos nas primeiras tentativas existem apenas para reduzir o desgaste mecânico do disjuntor, sem qualquer relação com a natureza do defeito.',
+        feedback:
+          'Incompleto. O principal critério para o escalonamento dos tempos mortos é dar tempo suficiente para a extinção do arco e desionização do ar, adequado à persistência provável da falta.',
       },
       {
         id: 'd',
-        texto: 'Religamento somente manual no campo.',
-        feedback: 'Incorreto. A função 79 executa religamento automático quando habilitada e permissiva.',
+        texto:
+          'O tempo morto da segunda tentativa é menor porque o sistema já identificou que a primeira falha foi transitória, reduzindo a margem de segurança necessária.',
+        feedback:
+          'Incorreto. É o contrário: tempos mortos aumentam a cada tentativa subsequente, justamente porque a persistência da falta após a primeira tentativa sugere um defeito potencialmente mais duradouro.',
       },
     ],
     explicacao:
-      'Em alimentadores aéreos, muitos defeitos são transitórios, como galhos, pipas ou animais. O F.79 ajuda a recompor com critério.',
+      'O escalonamento dos tempos mortos em esquemas de múltiplos religamentos (F.79) equilibra velocidade de recomposição para defeitos transitórios curtos com segurança adicional (maior tempo para desionização do arco) caso a falta persista nas tentativas seguintes.',
     checklist: [
       'Verificar ciclo do 79.',
       'Registrar tentativa com sucesso ou bloqueio.',
@@ -445,32 +516,41 @@ export const cenarios = [
     alarme: 'Religamento não executado',
     descricao:
       'O esquema recebeu condição para religamento, mas o disjuntor não religou automaticamente.',
-    pergunta: 'Qual verificação deve ser feita antes de suspeitar do relé 79?',
+    pergunta:
+      'O disjuntor não religou automaticamente mesmo com o esquema de religamento habilitado. Antes de suspeitar de falha no relé 79, por que a verificação da chave seletora F.43R deve ter prioridade na investigação?',
     respostaCorretaId: 'a',
     alternativas: [
       {
         id: 'a',
-        texto: 'Verificar posição da F.43R e permissivos do comando automático.',
-        feedback: 'Correto. A seleção/permissão pode impedir o religamento mesmo com o 79 disponível.',
+        texto:
+          'A F.43R define o modo de operação selecionado (automático, manual ou desligado) e funciona como permissivo de entrada para o comando de fechamento do 79; se estiver fora da posição automática, o relé pode estar funcionando corretamente, mas sem receber a permissão necessária para fechar.',
+        feedback:
+          'Correto. A chave seletora é um permissivo lógico anterior ao comando do 79; verificar sua posição evita diagnósticos equivocados de falha do relé.',
       },
       {
         id: 'b',
-        texto: 'Trocar imediatamente o relé 79.',
-        feedback: 'Incorreto. Antes de trocar o relé, devem ser verificados permissivos e comandos.',
+        texto:
+          'A F.43R apenas sinaliza visualmente a posição do disjuntor no painel, sem qualquer influência lógica sobre o comando de religamento automático.',
+        feedback:
+          'Incorreto. A F.43R é um permissivo funcional que habilita ou bloqueia o comando automático, não apenas uma sinalização visual.',
       },
       {
         id: 'c',
-        texto: 'Fechar manualmente sem consultar o despacho.',
-        feedback: 'Inseguro. Fechamento manual exige autorização operacional.',
+        texto:
+          'Verificar a F.43R só é relevante depois de confirmado defeito interno no relé 79, já que ambos operam de forma totalmente independente.',
+        feedback:
+          'Incorreto. Justamente por não serem independentes — a F.43R condiciona o comando do 79 — a verificação deve ocorrer antes de suspeitar do relé.',
       },
       {
         id: 'd',
-        texto: 'Desligar a corrente contínua da subestação.',
-        feedback: 'Inseguro. Desligar corrente contínua pode comprometer comando, proteção e sinalização.',
+        texto:
+          'A posição da F.43R influencia apenas o tempo morto do religamento, não a permissão para o comando de fechamento.',
+        feedback:
+          'Incorreto. A função da F.43R está relacionada à seleção/habilitação do modo de religamento, não à temporização do tempo morto.',
       },
     ],
     explicacao:
-      'A F.43R define condição/seleção do religamento. Se estiver fora da posição correta, o 79 pode não executar.',
+      'A chave seletora F.43R atua como permissivo lógico: define se o comando automático do 79 está habilitado a fechar o disjuntor. Uma posição incorreta bloqueia o religamento mesmo com o relé 79 funcionando normalmente, por isso deve ser verificada antes de suspeitar de falha do relé.',
     checklist: [
       'Conferir F.43R.',
       'Conferir 43AB/43T quando existir.',
@@ -498,32 +578,41 @@ export const cenarios = [
     alarme: 'Possível defeito no barramento',
     descricao:
       'A blindada possui proteção de barra por terra isolada com F.64, F.67G, temporizador F.2 e auxiliar F.86-3.',
-    pergunta: 'Qual conjunto compõe o esquema seletivo dessa proteção?',
+    pergunta:
+      'No esquema seletivo de proteção de barra por terra isolada (F.64, F.67G, F.2 e F.86-3), qual é o papel específico do temporizador F.2 dentro da lógica de atuação?',
     respostaCorretaId: 'a',
     alternativas: [
       {
         id: 'a',
-        texto: 'F.64, F.67G, F.2 e F.86-3.',
-        feedback: 'Correto. Esse conjunto compõe a lógica seletiva descrita.',
+        texto:
+          'O F.2 introduz um retardo deliberado entre a detecção da falta pelos elementos de terra (F.64/F.67G) e o comando de bloqueio/abertura pelo F.86-3, dando tempo às proteções de nível inferior (como as dos alimentadores) para eliminar faltas externas antes que a barra seja desenergizada.',
+        feedback:
+          'Correto. A temporização do F.2 é o que garante seletividade: só se a falta persistir além desse tempo é que a barra é considerada realmente afetada.',
       },
       {
         id: 'b',
-        texto: '87T, 86T e 81U.',
-        feedback: 'Incorreto. Essas funções pertencem a outros esquemas de proteção.',
+        texto:
+          'O F.2 mede diretamente a corrente diferencial da barra e substitui a função dos relés F.64 e F.67G na detecção da falta.',
+        feedback:
+          'Incorreto. O F.2 é um elemento de temporização, não de medição de corrente; a detecção é feita pelos relés F.64 e F.67G.',
       },
       {
         id: 'c',
-        texto: 'Somente F.79 e F.43R.',
-        feedback: 'Incorreto. Essas funções estão associadas ao religamento automático.',
+        texto:
+          'O F.2 existe apenas para registrar o horário da atuação, sem qualquer influência sobre o tempo até o comando de abertura da seção de barra.',
+        feedback:
+          'Incorreto. O F.2 introduz um retardo funcional na lógica de atuação, não apenas um registro de horário.',
       },
       {
         id: 'd',
-        texto: 'Apenas lâmpadas vermelha e verde do painel.',
-        feedback: 'Incorreto. Sinalização de painel não compõe a proteção seletiva.',
+        texto:
+          'A função do F.2 é acelerar a atuação do F.86-3 sempre que os relés F.64 ou F.67G forem sensibilizados, eliminando qualquer necessidade de seletividade com os alimentadores.',
+        feedback:
+          'Incorreto. O objetivo do F.2 é justamente o oposto: retardar a atuação para preservar a seletividade com as proteções de nível inferior.',
       },
     ],
     explicacao:
-      'O esquema usa F.64 e F.67G para detectar/selecionar defeito, F.2 para temporização e F.86-3 para bloqueio/abertura da seção.',
+      'No esquema seletivo de barra por terra isolada, o F.2 temporiza a lógica entre a detecção (F.64/F.67G) e o comando de bloqueio/abertura (F.86-3), garantindo que as proteções dos alimentadores tenham prioridade para eliminar faltas externas antes que a seção de barra seja considerada realmente defeituosa.',
     checklist: [
       'Verificar F.64.',
       'Verificar F.67G.',
@@ -551,32 +640,41 @@ export const cenarios = [
     alarme: 'Risco de atuação indevida do F.64',
     descricao:
       'Em algumas configurações, defeito monofásico em circuito de baixa do TSL pode sensibilizar o F.64.',
-    pergunta: 'Por que o F.67G foi usado como solução nesse esquema?',
+    pergunta:
+      'Em arranjos com TSL (transformador de serviço local) dentro da blindada, um defeito monofásico no circuito de baixa tensão do TSL pode sensibilizar indevidamente o F.64. Por que a adição do F.67G, um relé de sobrecorrente direcional de terra, resolve esse problema de seletividade?',
     respostaCorretaId: 'a',
     alternativas: [
       {
         id: 'a',
-        texto: 'Para melhorar a seletividade e evitar desenergização indevida da seção de barra.',
-        feedback: 'Correto. O F.67G ajuda a diferenciar defeitos externos de defeitos reais na barra.',
+        texto:
+          'O F.67G verifica não apenas a magnitude da corrente de terra, mas também o sentido do fluxo de potência; isso permite diferenciar uma falta real dentro da zona da barra de uma corrente de terra originada no circuito de baixa do TSL, que flui em sentido oposto ao de uma falta interna.',
+        feedback:
+          'Correto. A informação direcional é o que possibilita distinguir a origem da corrente de terra, algo que um elemento não direcional como o F.64 sozinho não consegue fazer.',
       },
       {
         id: 'b',
-        texto: 'Para substituir fisicamente o disjuntor geral.',
-        feedback: 'Incorreto. Relé de proteção não substitui o equipamento de manobra.',
+        texto:
+          'O F.67G substitui completamente o F.64, eliminando a necessidade de qualquer elemento de sobrecorrente de terra não direcional no esquema.',
+        feedback:
+          'Incorreto. O F.67G complementa o F.64 adicionando a informação direcional; não o substitui na lógica seletiva.',
       },
       {
         id: 'c',
-        texto: 'Para eliminar a necessidade de TC.',
-        feedback: 'Incorreto. O esquema continua dependendo de medições adequadas.',
+        texto:
+          'A direcionalidade do F.67G serve para aumentar a sensibilidade de detecção de correntes de terra, mas não tem relação com a origem ou o sentido da corrente.',
+        feedback:
+          'Incorreto. A principal contribuição do F.67G é justamente identificar o sentido do fluxo de corrente, não apenas aumentar sensibilidade.',
       },
       {
         id: 'd',
-        texto: 'Para permitir religamento automático da barra.',
-        feedback: 'Incorreto. O objetivo descrito é seletividade, não religamento automático.',
+        texto:
+          'O F.67G foi adicionado para eliminar completamente a corrente de terra gerada pelo TSL, impedindo fisicamente sua circulação pelo circuito de baixa.',
+        feedback:
+          'Incorreto. O relé não atua sobre a origem física da corrente; ele apenas discrimina, pela direção do fluxo, se a falta está dentro ou fora da zona protegida.',
       },
     ],
     explicacao:
-      'O F.67G ajuda a diferenciar defeito real de barra de defeitos externos/BT do TSL, evitando atuação indevida.',
+      'Elementos de sobrecorrente de terra não direcionais (como o F.64) não conseguem distinguir a origem de uma corrente de terra. O F.67G, ao considerar o sentido do fluxo de potência, permite diferenciar uma falta real na barra de uma corrente originada no circuito de baixa tensão do TSL, evitando desenergização indevida da seção.',
     checklist: [
       'Verificar se o TSL está na blindada.',
       'Avaliar atuação do F.64.',
@@ -604,32 +702,41 @@ export const cenarios = [
     alarme: 'Proteção de barra atuada',
     descricao:
       'A proteção indica defeito interno na seção da barra de 13,8 kV.',
-    pergunta: 'Qual procedimento é mais seguro?',
+    pergunta:
+      'Após a atuação da proteção de barra, a tensão nos alimentadores adjacentes aparenta estar normal. Do ponto de vista de segurança operacional, por que essa observação isolada não é suficiente para descartar defeito real na seção protegida?',
     respostaCorretaId: 'a',
     alternativas: [
       {
         id: 'a',
-        texto: 'Manter a seção isolada, inspecionar a blindada e só energizar após liberação.',
-        feedback: 'Correto. Defeito de barra exige isolamento e liberação antes da normalização.',
+        texto:
+          'Tensão aparentemente normal em circuitos adjacentes não garante ausência de defeito na seção isolada, pois a proteção já desenergizou a seção afetada; a normalidade em outros pontos reflete apenas que o defeito foi confinado pela proteção, não que ele deixou de existir fisicamente no barramento.',
+        feedback:
+          'Correto. A proteção isolou a seção justamente para conter o defeito; a tensão normal alhures é consequência do isolamento, não prova de que não houve falha física.',
       },
       {
         id: 'b',
-        texto: 'Rearmar o 86-3 e energizar imediatamente.',
-        feedback: 'Inseguro. O bloqueio não deve ser rearmado sem inspeção e autorização.',
+        texto:
+          'Se a tensão está normal, a atuação da proteção foi necessariamente indevida, e a seção pode ser reenergizada assim que o bloqueio 86-3 for rearmado.',
+        feedback:
+          'Inseguro. Presumir atuação indevida sem inspeção física da blindada é uma conclusão precipitada e perigosa.',
       },
       {
         id: 'c',
-        texto: 'Transferir carga para a mesma seção defeituosa.',
-        feedback: 'Incorreto. A seção defeituosa deve permanecer isolada.',
+        texto:
+          'A tensão normal comprova que o defeito ocorreu exclusivamente nos TCs de medição, dispensando qualquer inspeção do compartimento da blindada.',
+        feedback:
+          'Incorreto. Não há evidência suficiente para atribuir a causa exclusivamente aos TCs sem inspeção física.',
       },
       {
         id: 'd',
-        texto: 'Ignorar o alarme se a tensão voltou ao normal.',
-        feedback: 'Inseguro. A normalização aparente não elimina a necessidade de diagnóstico.',
+        texto:
+          'A observação da tensão substitui a necessidade de verificar odor, ruído ou marcas de arco elétrico durante a inspeção da blindada.',
+        feedback:
+          'Incorreto. A inspeção física (odor, ruído, marcas de arco) continua sendo indispensável, independentemente da leitura de tensão em pontos adjacentes.',
       },
     ],
     explicacao:
-      'Defeito de barra é crítico. A normalização só deve ocorrer após inspeção, identificação da causa e autorização.',
+      'A atuação da proteção de barra isola a seção defeituosa, o que pode fazer a tensão nos demais pontos parecer normal — isso é consequência da própria atuação, não prova de ausência de defeito. A liberação só deve ocorrer após inspeção física completa da blindada e identificação da causa.',
     checklist: [
       'Confirmar seção isolada.',
       'Inspecionar cubículos.',
@@ -658,32 +765,40 @@ export const cenarios = [
     descricao:
       'O defeito ocorreu fora da zona de proteção diferencial da barra.',
     pergunta:
-      'Como a proteção diferencial deve se comportar para defeito externo?',
+      'Para um defeito externo à zona diferencial, o esquema 87B/87BN deve, em condições normais, permanecer estável. No entanto, defeitos externos de alta magnitude podem gerar saturação assimétrica dos TCs de um dos terminais, criando uma corrente diferencial espúria. Como o esquema de proteção diferencial de barras trata esse risco?',
     respostaCorretaId: 'a',
     alternativas: [
       {
         id: 'a',
-        texto: 'Não deve operar, pois o defeito está fora da zona protegida.',
-        feedback: 'Correto. Para falta externa, a proteção diferencial deve permanecer estável.',
+        texto:
+          'Esquemas modernos de 87B/87BN utilizam restrição percentual (comparando a corrente diferencial com a corrente de restrição/através) e, em muitos casos, elementos adicionais de bloqueio por saturação, tornando o relé mais tolerante a erros de TC em faltas externas de alta corrente, sem perder sensibilidade a faltas internas reais.',
+        feedback:
+          'Correto. A restrição percentual (e/ou bloqueio por saturação) é o mecanismo que permite ao 87B/87BN permanecer estável mesmo diante de erro de TC causado por defeito externo severo.',
       },
       {
         id: 'b',
-        texto: 'Deve desligar todas as barras da subestação.',
-        feedback: 'Incorreto. Defeito externo não deve provocar atuação diferencial de barra.',
+        texto:
+          'A proteção diferencial de barras não possui nenhum mecanismo para lidar com saturação de TC; qualquer erro de medição em falta externa provoca atuação indevida inevitável.',
+        feedback:
+          'Incorreto. Esquemas modernos incorporam restrição percentual ou lógicas de bloqueio por saturação exatamente para mitigar esse risco.',
       },
       {
         id: 'c',
-        texto: 'Deve bloquear o transformador por 87T.',
-        feedback: 'Incorreto. 87T pertence à proteção diferencial de transformador.',
+        texto:
+          'A saturação de TC em falta externa é irrelevante para a proteção diferencial de barras, pois essa proteção não depende da qualidade da medição de corrente dos TCs.',
+        feedback:
+          'Incorreto. A proteção diferencial depende diretamente da precisão da medição de corrente dos TCs; a saturação é uma preocupação real de projeto e ajuste.',
       },
       {
         id: 'd',
-        texto: 'Deve acionar o religamento automático 79.',
-        feedback: 'Incorreto. Religamento automático não é a função da proteção diferencial.',
+        texto:
+          'O problema de saturação de TC é resolvido exclusivamente pela troca do relé por um de tecnologia eletromecânica, que não sofre esse tipo de erro de medição.',
+        feedback:
+          'Incorreto. Relés eletromecânicos não são imunes à saturação de TC; a mitigação vem da lógica de restrição/bloqueio do esquema de proteção, não da tecnologia do relé em si.',
       },
     ],
     explicacao:
-      'A proteção diferencial compara correntes dentro da zona protegida. Para falta externa, ela deve permanecer estável.',
+      'Faltas externas de alta magnitude podem saturar assimetricamente os TCs de um terminal, gerando uma corrente diferencial aparente mesmo sem falta real na zona protegida. Esquemas de 87B/87BN mitigam esse risco com restrição percentual e, em muitos casos, elementos adicionais de bloqueio por saturação, preservando estabilidade sem perder sensibilidade a faltas internas.',
     checklist: [
       'Confirmar zona protegida.',
       'Verificar TCs exclusivos da proteção.',
@@ -711,32 +826,41 @@ export const cenarios = [
     alarme: 'Análise de circuito de corrente',
     descricao:
       'A proteção diferencial de barras utiliza TCs específicos para delimitar sua zona de atuação.',
-    pergunta: 'Qual afirmação está correta?',
+    pergunta:
+      'Por que a proteção diferencial de barras (87B) normalmente utiliza núcleos de TC exclusivos, em vez de compartilhar os mesmos núcleos usados pelas proteções de sobrecorrente dos alimentadores?',
     respostaCorretaId: 'a',
     alternativas: [
       {
         id: 'a',
-        texto: 'Os TCs da proteção diferencial de barras são exclusivos dessa proteção.',
-        feedback: 'Correto. Essa exclusividade ajuda a delimitar a zona protegida.',
+        texto:
+          'Núcleos exclusivos evitam que o burden adicional de outras proteções e medições influencie a precisão e a resposta transitória dos TCs usados no esquema diferencial, além de manter a zona de proteção claramente delimitada pelos pontos exatos onde os TCs estão instalados.',
+        feedback:
+          'Correto. A exclusividade preserva a precisão de medição necessária para a comparação diferencial e define com clareza os limites físicos da zona protegida.',
       },
       {
         id: 'b',
-        texto: 'São sempre os mesmos TCs dos alimentadores.',
-        feedback: 'Incorreto. A proteção diferencial usa TCs específicos para sua zona.',
+        texto:
+          'O compartilhamento de núcleos entre proteções é fisicamente impossível, já que cada TC só pode alimentar um único relé de qualquer tipo.',
+        feedback:
+          'Incorreto. Um TC pode ter múltiplos enrolamentos secundários; o motivo da exclusividade é de precisão e delimitação de zona, não impossibilidade física.',
       },
       {
         id: 'c',
-        texto: 'Não existe TC em proteção diferencial.',
-        feedback: 'Incorreto. A comparação diferencial depende de medições de corrente.',
+        texto:
+          'Núcleos exclusivos são usados apenas por tradição de projeto, sem qualquer diferença técnica de desempenho em relação ao compartilhamento com outras proteções.',
+        feedback:
+          'Incorreto. Há razões técnicas concretas (burden, precisão, delimitação de zona) para a exclusividade, não apenas convenção.',
       },
       {
         id: 'd',
-        texto: 'A proteção usa somente tensão de serviço auxiliar.',
-        feedback: 'Incorreto. A proteção diferencial de barras compara correntes.',
+        texto:
+          'A exclusividade dos TCs existe para permitir que a proteção diferencial de barras opere sem qualquer necessidade de calibração de relação de transformação entre os terminais.',
+        feedback:
+          'Incorreto. A calibração e compatibilidade de relação de transformação entre os TCs dos diferentes terminais continua sendo necessária, exclusivos ou não.',
       },
     ],
     explicacao:
-      'TCs exclusivos ajudam a garantir seletividade e delimitar corretamente a zona protegida da barra.',
+      'TCs exclusivos para o esquema diferencial de barras reduzem o burden compartilhado com outras proteções, preservam a precisão de medição necessária para a comparação diferencial e delimitam claramente os pontos que definem a zona protegida — fatores essenciais para a estabilidade e sensibilidade do 87B.',
     checklist: [
       'Identificar TCs da proteção.',
       'Conferir circuito de corrente.',
@@ -764,32 +888,41 @@ export const cenarios = [
     alarme: 'Indicação incoerente de posição',
     descricao:
       'Após desarme, a lâmpada vermelha de fechado não apagou, mesmo com o disjuntor aberto.',
-    pergunta: 'Qual causa deve ser investigada primeiro?',
+    pergunta:
+      'A lâmpada vermelha (indicação de fechado) permanece acesa mesmo após o disjuntor abrir corretamente. Considerando que essa lâmpada normalmente é alimentada através do contato 52a (que replica a posição do disjuntor), qual hipótese técnica melhor explica essa indicação incoerente?',
     respostaCorretaId: 'a',
     alternativas: [
       {
         id: 'a',
-        texto: 'Circuito de sinalização/contatos auxiliares 52a e 52b do disjuntor.',
-        feedback: 'Correto. Indicação incoerente costuma envolver contatos auxiliares ou circuito de sinalização.',
+        texto:
+          'O contato 52a pode estar mecanicamente preso na posição fechada (não acompanhando a abertura real do disjuntor) ou pode haver um desvio no circuito de sinalização que mantém a lâmpada energizada; ambas as hipóteses exigem verificação do contato auxiliar e do circuito de sinalização antes de confiar na indicação.',
+        feedback:
+          'Correto. Como a lâmpada vermelha depende do 52a, tanto uma falha mecânica do contato quanto um defeito elétrico no circuito de sinalização podem gerar essa indicação incoerente.',
       },
       {
         id: 'b',
-        texto: 'Atuação obrigatória do 87T.',
-        feedback: 'Incorreto. A descrição trata de sinalização de posição do disjuntor.',
+        texto:
+          'A indicação incoerente só pode ser causada por defeito no contato 52b, já que esse contato é o único responsável pela lâmpada vermelha de posição fechada.',
+        feedback:
+          'Incorreto. A lâmpada vermelha (fechado) tipicamente depende do 52a, não do 52b (associado à lâmpada verde, de aberto); atribuir a causa ao 52b inverte a lógica dos contatos auxiliares.',
       },
       {
         id: 'c',
-        texto: 'Defeito no resistor de aterramento da barra.',
-        feedback: 'Incorreto. Essa causa não explica diretamente a lâmpada de posição fechada.',
+        texto:
+          'Lâmpadas de sinalização de posição não dependem de contatos auxiliares do disjuntor, sendo alimentadas diretamente por um sensor de tensão da linha.',
+        feedback:
+          'Incorreto. A sinalização convencional de posição (vermelha/verde) depende dos contatos auxiliares 52a/52b, refletindo mecanicamente a posição do disjuntor.',
       },
       {
         id: 'd',
-        texto: 'Subfrequência no sistema.',
-        feedback: 'Incorreto. Subfrequência não é causa típica de indicação incoerente de posição.',
+        texto:
+          'Essa indicação incoerente é esperada sempre que houver religamento automático habilitado, não representando uma anomalia a ser investigada.',
+        feedback:
+          'Incorreto. A indicação incoerente é uma anomalia real que precisa ser investigada, independentemente da configuração do religamento automático.',
       },
     ],
     explicacao:
-      'Indicação incoerente geralmente está relacionada a contato auxiliar, circuito de lâmpada ou supervisão de posição.',
+      'A lâmpada vermelha de posição fechada normalmente é alimentada através do contato auxiliar 52a, que replica mecanicamente o estado do disjuntor. Uma indicação incoerente após abertura real do disjuntor aponta para falha mecânica do 52a ou defeito no circuito de sinalização, não para o 52b (associado à lâmpada verde) nem para causas elétricas de proteção como o 87T.',
     checklist: [
       'Confirmar posição mecânica.',
       'Verificar indicação elétrica.',
@@ -817,32 +950,41 @@ export const cenarios = [
     alarme: 'Frequência abaixo do limite',
     descricao:
       'A frequência do sistema caiu abaixo do valor operacional aceitável.',
-    pergunta: 'Qual atitude operacional é mais segura?',
+    pergunta:
+      'Durante um evento de subfrequência, esquemas de corte automático de carga (81U) atuam em estágios escalonados por faixas de frequência. Por que essa atuação em estágios, em vez de um corte único e total, é tecnicamente preferível para a recuperação do sistema?',
     respostaCorretaId: 'a',
     alternativas: [
       {
         id: 'a',
-        texto: 'Monitorar a frequência, não religar cargas sem autorização e aguardar despacho.',
-        feedback: 'Correto. Religamento de carga sem autorização pode agravar a instabilidade.',
+        texto:
+          'O corte escalonado retira apenas a quantidade de carga necessária em cada faixa de frequência para conter a queda e permitir a recuperação, evitando tanto a continuidade do colapso (corte insuficiente) quanto uma sobre-elevação de frequência por corte excessivo, também prejudicial ao sistema.',
+        feedback:
+          'Correto. O escalonamento busca o equilíbrio entre conter a subfrequência e não gerar sobrecorreção, que criaria um novo desequilíbrio (sobrefrequência) no sistema.',
       },
       {
         id: 'b',
-        texto: 'Religar todas as cargas para elevar a frequência.',
-        feedback: 'Inseguro. Aumentar carga tende a piorar a subfrequência.',
+        texto:
+          'O corte escalonado existe apenas para simplificar a operação da subestação, sem qualquer relação com o comportamento da frequência do sistema após a atuação.',
+        feedback:
+          'Incorreto. O critério de escalonamento está diretamente relacionado ao comportamento da frequência e à necessidade de equilíbrio entre geração e carga.',
       },
       {
         id: 'c',
-        texto: 'Isolar todos os transformadores imediatamente.',
-        feedback: 'Incorreto. A ação deve seguir orientação operacional, não isolamento indiscriminado.',
+        texto:
+          'Um corte único e total de toda a carga seria sempre a solução mais segura, pois eliminaria completamente qualquer risco de nova subfrequência no sistema.',
+        feedback:
+          'Incorreto. Um corte total e desnecessário pode gerar sobrefrequência e outros problemas de estabilidade, sem ser proporcional à real necessidade de alívio.',
       },
       {
         id: 'd',
-        texto: 'Desativar a proteção de subfrequência.',
-        feedback: 'Inseguro. Proteções não devem ser desativadas como resposta à ocorrência.',
+        texto:
+          'A atuação em estágios serve exclusivamente para proteger fisicamente os relés 81U contra sobrecarga de contatos, sem relação com a estabilidade do sistema elétrico.',
+        feedback:
+          'Incorreto. O objetivo do escalonamento é o equilíbrio entre carga e geração, não a proteção física dos contatos do relé.',
       },
     ],
     explicacao:
-      'Em subfrequência, religar carga sem autorização pode piorar a instabilidade do sistema.',
+      'O corte de carga por subfrequência é escalonado em estágios de frequência justamente para retirar apenas a carga necessária em cada faixa, equilibrando a contenção da queda de frequência com o risco de sobrecorreção. Por isso, após a atuação, não se deve religar cargas sem autorização: isso pode neutralizar o efeito do corte e agravar a instabilidade.',
     checklist: [
       'Monitorar frequência.',
       'Registrar alarmes.',
@@ -871,7 +1013,7 @@ export const cenarios = [
     descricao:
       'O relé de bloqueio 86-1 do TR1 atuou na blindada de 13 kV, em um esquema em linha com disparo cruzado.',
     pergunta:
-      'O que será encontrado na URG após essa atuação e como o automatismo restabelece as seções saudáveis da subestação?',
+      'O relé de bloqueio 86-1 do TR1 atuou na blindada de 13 kV, em um esquema em linha com disparo cruzado. Além de isolar o TR1, por que esse esquema também comanda a abertura do disjuntor geral correspondente do TR2, mesmo o defeito sendo exclusivo do TR1, e como o automatismo restabelece as seções saudáveis?',
     imagem: {
       src: diagramaUrg861Tr1,
       alt: 'Diagrama da URG após atuação do relé 86-1 do TR1',
@@ -881,39 +1023,48 @@ export const cenarios = [
     alternativas: [
       {
         id: 'a',
-        texto: 'O disjuntor geral de 13 kV do TR1 e o disjuntor correspondente do TR2 ficam abertos pelo disparo cruzado. Os disjuntores de junção fecham automaticamente, redistribuindo a carga entre o TR2 e o TR3, enquanto o TR1 permanece isolado e bloqueado.',
-        feedback: 'Correto. O TR1 fica bloqueado, e o automatismo recompõe as seções saudáveis por meio das junções.',
+        texto:
+          'Em arranjo em linha, a seção de barra entre os disjuntores gerais de TR1 e TR2 pode continuar recebendo contribuição de falta do TR2; o disparo cruzado abre o disjuntor correspondente do TR2 para eliminar essa contribuição remanescente. Em seguida, com os disjuntores de junção em automático, o sistema fecha as junções necessárias, redistribuindo a carga entre TR2 e TR3, enquanto o TR1 permanece isolado e bloqueado.',
+        feedback:
+          'Correto. O disparo cruzado existe para eliminar a contribuição de outra fonte (TR2) para a mesma seção de barra afetada, e o automatismo de junções recompõe as seções saudáveis sem religar o TR1.',
       },
       {
         id: 'b',
-        texto: 'Todos os disjuntores da subestação permanecem abertos e nenhuma transferência automática de carga acontece.',
-        feedback: 'Incorreto. O cenário prevê fechamento automático das junções saudáveis.',
+        texto:
+          'Todos os disjuntores da subestação permanecem abertos e nenhuma transferência automática de carga acontece, pois o disparo cruzado tem como único efeito duplicar o registro do evento na URG.',
+        feedback:
+          'Incorreto. O disparo cruzado tem função elétrica real (eliminar contribuição de falta), e o automatismo de junções recompõe as seções saudáveis.',
       },
       {
         id: 'c',
-        texto: 'O TR1 é religado automaticamente pelo relé 86-1, sem necessidade de inspeção ou liberação operacional.',
-        feedback: 'Inseguro. O 86-1 bloqueia o TR1; não há religamento automático do transformador afetado.',
+        texto:
+          'O TR1 é religado automaticamente pelo relé 86-1 assim que o disjuntor correspondente do TR2 abre, dispensando inspeção ou liberação operacional.',
+        feedback:
+          'Inseguro. O 86-1 bloqueia e isola o TR1; não há religamento automático do transformador afetado, independentemente da atuação no TR2.',
       },
       {
         id: 'd',
-        texto: 'Apenas o disjuntor geral de 138 kV do TR1 abre, enquanto todos os disjuntores de 13 kV permanecem fechados.',
-        feedback: 'Incorreto. A atuação descrita envolve a blindada de 13 kV e disparo cruzado.',
+        texto:
+          'O disparo cruzado abre o disjuntor do TR2 apenas como medida preventiva de manutenção programada, sem qualquer relação com a eliminação da falta que afetou o TR1.',
+        feedback:
+          'Incorreto. O disparo cruzado é uma ação de proteção em tempo real relacionada à eliminação da contribuição de falta, não uma medida de manutenção.',
       },
     ],
     explicacao:
-      'O relé 86-1 bloqueia e isola o TR1. O transformador afetado não é religado automaticamente; as junções em automático recompõem as seções saudáveis.',
+      'O disparo cruzado existe porque, em arranjo em linha, a seção de barra pode continuar recebendo contribuição de falta do TR2 mesmo após o TR1 ser isolado; abrir o disjuntor correspondente do TR2 elimina essa contribuição remanescente. O TR1 permanece bloqueado e isolado — não há religamento automático —, enquanto os disjuntores de junção em automático recompõem as seções saudáveis, redistribuindo a carga entre TR2 e TR3.',
     explicacaoDetalhada: [
       {
         titulo: 'Condição encontrada na URG:',
         itens: [
           'TR1 isolado após a atuação da proteção.',
+          'Disjuntor correspondente do TR2 também aberto, por disparo cruzado.',
           'A carga é transferida automaticamente para os transformadores disponíveis.',
         ],
       },
       {
         titulo: 'Resultado da atuação:',
         texto:
-          'O relé 86-1 bloqueia e isola o TR1. O transformador afetado não é religado automaticamente. Com os disjuntores de junção em automático, o sistema identifica a abertura dos disjuntores gerais e fecha as junções necessárias para restabelecer as seções saudáveis e redistribuir a carga entre o TR2 e o TR3.',
+          'O relé 86-1 bloqueia e isola o TR1. O disparo cruzado abre o disjuntor correspondente do TR2 para eliminar a contribuição remanescente de corrente de falta pela mesma seção de barra. O transformador afetado (TR1) não é religado automaticamente. Com os disjuntores de junção em automático, o sistema identifica a abertura dos disjuntores gerais e fecha as junções necessárias para restabelecer as seções saudáveis e redistribuir a carga entre o TR2 e o TR3.',
       },
     ],
     checklist: [

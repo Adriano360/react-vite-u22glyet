@@ -95,7 +95,7 @@ export function SimuladorView({
 
         <section className="scada-section scada-question-section" aria-labelledby="diagnostico-title">
           <div className="scada-question-meta">
-            <span>Pergunta {cenario.id} de {totalDaTrilha}</span>
+            <span>Pergunta {usados.length} de {totalDaTrilha}</span>
             <span>{cenario.area}</span>
           </div>
 

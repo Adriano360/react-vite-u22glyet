@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import subestacaoBanner from '../../assets/subestacao-banner.png';
-import subestacaoSlider01 from '../../assets/subestacao-slider-01.webp';
-import subestacaoSlider02 from '../../assets/subestacao-slider-02.webp';
+import subestacaoSlider01 from '../../assets/subestacao-slider-01.jpg';
+import subestacaoSlider02 from '../../assets/subestacao-slider-02.png';
 import { HomeIcon } from './HomeIcon';
 
 const highlights = [
@@ -205,7 +205,7 @@ export function HeroSection() {
         style={{ objectPosition: currentSlide.position }}
         loading="eager"
         decoding="sync"
-        fetchPriority="high"
+        fetchpriority="high"
         draggable="false"
         onError={handleActiveImageError}
       />

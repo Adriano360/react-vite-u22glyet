@@ -31,7 +31,7 @@ export function GestorView({
       <header className="manager-heading">
         <div>
           <h2>Painel do Gestor</h2>
-          <p>Acompanhe desempenho e trilhas prioritarias.</p>
+          <p>Acompanhe desempenho e trilhas prioritárias.</p>
         </div>
 
         <div className="manager-actions">
@@ -53,14 +53,14 @@ export function GestorView({
             <ManagerIcon type="user" />
           </span>
           <small>Operador</small>
-          <strong>{nome || 'Nao informado'}</strong>
+          <strong>{nome || 'Não informado'}</strong>
         </article>
 
         <article className="manager-stat-card score">
           <span className="manager-stat-icon">
             <ManagerIcon type="score" />
           </span>
-          <small>Pontuacao</small>
+          <small>Pontuação</small>
           <strong>{pontos}</strong>
         </article>
 
@@ -76,7 +76,7 @@ export function GestorView({
           <span className="manager-stat-icon">
             <ManagerIcon type="status" />
           </span>
-          <small>Situacao atual</small>
+          <small>Situação atual</small>
           <strong>{situacao}</strong>
         </article>
       </section>
@@ -105,7 +105,7 @@ export function GestorView({
         </article>
 
         <article className="manager-card recommendation-card">
-          <h3>Recomendacao de treino</h3>
+          <h3>Recomendação de treino</h3>
           {recomendacao ? (
             <div className="recommendation-box">
               <small>Trilha recomendada</small>
@@ -123,7 +123,7 @@ export function GestorView({
             </div>
           ) : (
             <p className="recommendation-empty">
-              Responda algumas perguntas para gerar uma recomendacao.
+              Responda algumas perguntas para gerar uma recomendação.
             </p>
           )}
         </article>

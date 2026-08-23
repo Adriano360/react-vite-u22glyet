@@ -5,7 +5,7 @@ import './TrainingHeaderFix.css';
 const mainItems = [
   { id: 'home', label: 'Início', icon: 'home', target: 'home' },
   { id: 'progress', label: 'Meu Progresso', icon: 'progress', target: 'gestor' },
-  { id: 'fundamentos', label: 'Fundamentos', icon: 'book', area: 'Sistema' },
+  { id: 'fundamentos', label: 'Fundamentos', icon: 'book', area: 'Sistema elétrico' },
   {
     id: 'transformadores',
     label: 'Transformadores de Instrumentos',
@@ -24,13 +24,13 @@ const protectionItems = [
     target: 'protecao-diferencial-barras',
   },
   { id: 'bloqueio-reverso', label: 'Bloqueio Reverso', icon: 'shield', area: 'Barra 13,8 kV' },
-  { id: 'tipo-bloqueio', label: 'Tipo Bloqueio', icon: 'shield', area: 'Falha de Disjuntor' },
-  { id: 'terra-isolada', label: 'Terra Isolada', icon: 'shield', area: 'Sobrecorrente' },
+  { id: 'tipo-bloqueio', label: 'Tipo Bloqueio', icon: 'shield', area: 'Falha de disjuntor' },
+  { id: 'terra-isolada', label: 'Terra Isolada', icon: 'shield', area: 'Barra 13,8 kV' },
 ];
 
 const finalItems = [
-  { id: 'automatismos', label: 'Automatismos', icon: 'automation', area: 'Religamento Automatico' },
-  { id: 'diagramas', label: 'Diagramas', icon: 'diagram', area: 'Comando e Sinalizacao' },
+  { id: 'automatismos', label: 'Automatismos', icon: 'automation', area: 'Religamento automático' },
+  { id: 'diagramas', label: 'Diagramas', icon: 'diagram', area: 'Comando e sinalização' },
   { id: 'avaliacao', label: 'Avaliação', icon: 'clipboard', target: 'simulador' },
   { id: 'certificado', label: 'Certificado', icon: 'certificate', target: 'certificado' },
 ];
@@ -118,6 +118,7 @@ export function TrainingHeader({
   }
 
   function itemAtivo(item) {
+    if (item.target && item.target !== 'simulador') return tela === item.target;
     if (item.area) return tela === 'simulador' && filtroArea === item.area;
     return tela === item.target;
   }

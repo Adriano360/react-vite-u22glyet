@@ -1,11 +1,11 @@
 import { HomeIcon } from './HomeIcon';
 
 const modules = [
-  { title: 'Fundamentos', text: 'Conceitos básicos de sistemas elétricos.', icon: 'book', area: 'Sistema' },
+  { title: 'Fundamentos', text: 'Conceitos básicos de sistemas elétricos.', icon: 'book', area: 'Sistema elétrico' },
   { title: 'Transformadores de Instrumentos', text: 'TCs, TPs e suas aplicações em subestações.', icon: 'transformer', area: 'Transformadores', target: 'transformadores-instrumentos' },
   { title: 'Proteções', text: 'Sistemas de proteção de subestações.', icon: 'shield', area: 'Diferencial de Barras', target: 'protecao-diferencial-barras' },
-  { title: 'Automatismos', text: 'Lógicas, intertravamentos e sistemas auxiliares.', icon: 'automation', area: 'Religamento Automatico' },
-  { title: 'Diagramas', text: 'Diagramas elétricos originais e explicados.', icon: 'diagram', area: 'Comando e Sinalizacao' },
+  { title: 'Automatismos', text: 'Lógicas, intertravamentos e sistemas auxiliares.', icon: 'automation', area: 'Religamento automático' },
+  { title: 'Diagramas', text: 'Diagramas elétricos originais e explicados.', icon: 'diagram', area: 'Comando e sinalização' },
   { title: 'Avaliação', text: 'Teste seus conhecimentos e conquiste o certificado.', icon: 'clipboard', target: 'simulador' },
 ];
 

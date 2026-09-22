@@ -1,45 +1,121 @@
 import lightLogo from '../../assets/light-logo.png';
+import './LoginView.css';
 
 export function LoginView({ nome, setNome, erroLogin, onEntrar }) {
+  function enviarFormulario(event) {
+    event.preventDefault();
+    onEntrar();
+  }
+
   return (
     <main className="training-app login-screen">
-      <section className="training-login">
-        <img className="training-logo" src={lightLogo} alt="Light+" />
-        <h1>Treinamento de Proteção</h1>
-        <p>
-          Simulador operacional para capacitação de mantenedores e operadores
-          de subestações.
-        </p>
+      <div className="login-layout">
+        <section className="login-intro" aria-labelledby="login-title">
+          <div className="login-brand">
+            <img src={lightLogo} alt="Light+" />
+            <span>Treinamento Operacional</span>
+          </div>
 
-        <label className="login-field">
-          <span>Nome do operador</span>
-          <span className="login-input-wrap">
+          <div className="login-intro-copy">
+            <span className="login-kicker">Capacitação técnica</span>
+            <h1 id="login-title">Operação de Subestações</h1>
+            <p className="login-description">
+              Desenvolva seus conhecimentos em sistemas elétricos, equipamentos
+              e proteção com trilhas de aprendizagem e cenários didáticos.
+            </p>
+
+            <div className="login-highlights" aria-label="Recursos do curso">
+              <div className="login-highlight">
+                <span>01</span>
+                <div>
+                  <strong>Estude</strong>
+                  <small>Fundamentos e equipamentos</small>
+                </div>
+              </div>
+              <div className="login-highlight">
+                <span>02</span>
+                <div>
+                  <strong>Pratique</strong>
+                  <small>Cenários de treinamento</small>
+                </div>
+              </div>
+              <div className="login-highlight">
+                <span>03</span>
+                <div>
+                  <strong>Acompanhe</strong>
+                  <small>Seu progresso no curso</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="login-ornament" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
+        </section>
+
+        <section className="training-login" aria-labelledby="access-title">
+          <div className="login-panel-heading">
+            <span className="login-panel-mark" aria-hidden="true">+</span>
+            <span>Área do participante</span>
+          </div>
+          <h2 id="access-title">Vamos começar</h2>
+          <p className="login-panel-description">
+            Informe seu nome para acessar o treinamento.
+          </p>
+
+          <form onSubmit={enviarFormulario}>
+            <label className="login-field" htmlFor="operator-name">
+              <span>Nome do operador</span>
+              <span className="login-input-wrap">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5Z" />
+                </svg>
+                <input
+                  id="operator-name"
+                  name="operatorName"
+                  type="text"
+                  autoComplete="name"
+                  value={nome}
+                  onChange={(event) => setNome(event.target.value)}
+                  placeholder="Digite seu nome"
+                  aria-invalid={Boolean(erroLogin)}
+                  aria-describedby={erroLogin ? 'login-error' : 'login-helper'}
+                />
+              </span>
+            </label>
+
+            {erroLogin && (
+              <p className="login-error" id="login-error" role="alert">
+                {erroLogin}
+              </p>
+            )}
+
+            <button className="primary-button login-submit" type="submit">
+              <span>Acessar treinamento</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h13m-5-5 5 5-5 5" />
+              </svg>
+            </button>
+          </form>
+
+          <p className="login-helper" id="login-helper">
+            Seu nome aparecerá no certificado e nos resultados do treinamento.
+          </p>
+          <div className="login-panel-note">
             <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5Z" />
+              <path d="M12 3 5 6v5c0 4.3 2.6 7.8 7 10 4.4-2.2 7-5.7 7-10V6l-7-3Z" />
+              <path d="m9 12 2 2 4-4" />
             </svg>
-            <input
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-              placeholder="Digite seu nome"
-              aria-invalid={Boolean(erroLogin)}
-            />
-          </span>
-        </label>
-        {erroLogin && <p className="login-error">{erroLogin}</p>}
-
-        <button className="primary-button login-submit" onClick={onEntrar}>
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M8 5v14l11-7L8 5Z" />
-          </svg>
-          Entrar na Plataforma
-        </button>
-        <p className="login-helper">
-          Seu nome será usado no certificado e nos resultados do treinamento.
-        </p>
-      </section>
+            <span>Ambiente de aprendizagem Light+</span>
+          </div>
+        </section>
+      </div>
 
       <footer className="login-footer">
-        Light+ · Treinamento Operacional · Versão 1.0
+        <span>Light+ · Treinamento Operacional</span>
+        <span>Versão 1.0</span>
       </footer>
     </main>
   );

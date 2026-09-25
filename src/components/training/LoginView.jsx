@@ -57,8 +57,7 @@ export function LoginView({ nome, setNome, erroLogin, onEntrar }) {
 
         <section className="training-login" aria-labelledby="access-title">
           <div className="login-panel-heading">
-            <span className="login-panel-mark" aria-hidden="true">+</span>
-            <span>Área do participante</span>
+            <img className="login-panel-logo" src={lightLogo} alt="Light" />
           </div>
           <h2 id="access-title">Vamos começar</h2>
           <p className="login-panel-description">

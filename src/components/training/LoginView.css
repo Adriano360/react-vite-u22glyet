@@ -6,8 +6,9 @@
   overflow: hidden;
   padding: clamp(22px, 4vw, 56px) clamp(20px, 7vw, 104px) 20px;
   background:
-    radial-gradient(circle at 2% 100%, rgba(0, 158, 149, 0.08), transparent 34%),
-    #f4f7f8;
+    linear-gradient(180deg, rgba(0, 92, 86, 0.76), rgba(0, 48, 45, 0.94)),
+    url('../../assets/subestacao-slider-01.jpg') center / cover no-repeat,
+    #00302d;
 }
 
 .login-layout {

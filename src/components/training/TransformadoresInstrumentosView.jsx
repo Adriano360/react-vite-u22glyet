@@ -9,6 +9,7 @@ import {
   Target,
   Zap,
 } from 'lucide-react';
+import TCDiagram3D from './TCDiagram3D';
 
 function publicAsset(path) {
   const cleanPath = path.replace(/^\/+/, '');
@@ -90,51 +91,7 @@ function CurrentTransformerDiagram() {
   return (
     <article className="principle-diagram">
       <h3>Diagrama do TC</h3>
-      <svg className="tc-animated-diagram" viewBox="0 0 520 240" role="img" aria-label="Diagrama de funcionamento de um transformador de corrente">
-        <defs>
-          <marker id="arrow-teal" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L9,3 z" fill="#008f8b" />
-          </marker>
-          <marker id="arrow-orange" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L9,3 z" fill="#f59e0b" />
-          </marker>
-          <marker id="arrow-red" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L9,3 z" fill="#dc2626" />
-          </marker>
-          <marker id="arrow-blue-current" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L9,3 z" fill="#2563eb" />
-          </marker>
-        </defs>
-        <rect x="18" y="18" width="484" height="204" rx="16" fill="#ffffff" stroke="#d9eeee" />
-        <text x="260" y="44" fill="#0f172a" fontSize="16" fontWeight="900" textAnchor="middle">
-          Transformador de Corrente - TC
-        </text>
-        <text x="74" y="86" fill="#0f172a" fontSize="13" fontWeight="800" textAnchor="middle">Ip</text>
-        <text x="74" y="101" fill="#334155" fontSize="11" textAnchor="middle">(Prim&aacute;rio)</text>
-        <path d="M88 116h255" stroke="#0f172a" strokeWidth="3" markerEnd="url(#arrow-teal)" />
-        <rect x="112" y="108" width="82" height="16" rx="8" fill="#475569" />
-
-        <g transform="translate(168 72)">
-          <ellipse cx="56" cy="66" rx="42" ry="54" fill="#cbd5e1" stroke="#64748b" strokeWidth="2" />
-          <ellipse cx="56" cy="66" rx="24" ry="34" fill="#ffffff" stroke="#94a3b8" strokeWidth="2" />
-          <ellipse cx="56" cy="66" rx="12" ry="19" fill="#e2e8f0" stroke="#64748b" strokeWidth="2" />
-          <path d="M38 30c19 14 28 36 24 72" fill="none" stroke="#008f8b" strokeWidth="4" strokeLinecap="round" />
-          <path d="M48 28c19 14 28 38 24 76" fill="none" stroke="#14b8a6" strokeWidth="3" strokeLinecap="round" />
-        </g>
-
-        <path className="tc-secondary-flow" d="M258 116 C274 92 304 92 320 116 S366 140 382 116" fill="none" stroke="#008f8b" strokeWidth="3.5" />
-        <text x="356" y="86" fill="#0f172a" fontSize="13" fontWeight="800" textAnchor="middle">Is</text>
-        <text x="356" y="101" fill="#334155" fontSize="11" textAnchor="middle">(Secund&aacute;rio)</text>
-        <rect x="384" y="91" width="72" height="52" rx="5" fill="#ffffff" stroke="#94a3b8" strokeWidth="2" />
-        <text x="420" y="114" fill="#0f172a" fontSize="11" fontWeight="800" textAnchor="middle">Rel&eacute; de</text>
-        <text x="420" y="130" fill="#0f172a" fontSize="11" fontWeight="800" textAnchor="middle">Prote&ccedil;&atilde;o</text>
-
-        <path d="M72 180h330" stroke="#008f8b" strokeWidth="3" markerEnd="url(#arrow-teal)" />
-        <text x="236" y="204" fill="#334155" fontSize="12" fontWeight="700" textAnchor="middle">
-          Reduz corrente elevada para valor padr&atilde;o (ex.: 5 A ou 1 A)
-        </text>
-        <text x="428" y="188" fill="#007c7a" fontSize="13" fontWeight="900" textAnchor="middle">Ip / Is = N2 / N1</text>
-      </svg>
+      <TCDiagram3D />
       <p>Reduz corrente elevada para valor padr&atilde;o, exemplo: 5 A ou 1 A.</p>
     </article>
   );

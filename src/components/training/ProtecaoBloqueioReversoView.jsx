@@ -63,7 +63,7 @@ function montarCenario(local, tipo) {
   }
 
   return {
-    resumo: `Defeito na seção ${lado}: abrem o geral ${geral} e a junção J. A seção ${lado === 'A' ? 'B' : 'A'} continua alimentada.`,
+    resumo: `Defeito na seção ${lado}: o geral ${geral} abre e o fechamento da junção J é bloqueado. A junção permanece aberta e a seção ${lado === 'A' ? 'B' : 'A'} continua alimentada.`,
     passos: [
       {
         texto: `Defeito ${nomeDefeito} na seção ${lado} do barramento, entre o geral ${geral} e a junção J. Nenhum alimentador enxerga o defeito, então não há sinal de bloqueio.`,
@@ -76,9 +76,10 @@ function montarCenario(local, tipo) {
         abertos: [],
       },
       {
-        texto: `O 86-3 (${geral}) abre o disjuntor geral ${geral} e abre e bloqueia o disjuntor de junção J. Só a seção defeituosa é isolada — essa é a seletividade do esquema.`,
+        texto: `O 86-3 (${geral}) abre o disjuntor geral ${geral} e bloqueia o fechamento do disjuntor de junção J, que já está aberto na condição normal. Só a seção defeituosa é isolada — essa é a seletividade do esquema.`,
         reles: { [geral]: 'opera' },
         abertos: [geral, 'J'],
+        bloqueados: ['J'],
         secaoMorta: lado,
       },
     ],
@@ -123,12 +124,12 @@ const perguntas = [
     q: 'Defeito na barra entre o geral 2A e a junção J. Qual é a sequência correta?',
     opcoes: [
       '86-3 (2A) → 50BN (2A) → abre 2B',
-      '50BN (2A) → 86-3 (2A) → abre 2A e abre e bloqueia J',
+      '50BN (2A) → 86-3 (2A) → abre 2A e bloqueia o fechamento de J',
       '50/51N do alimentador → abre o alimentador',
       '50BN (J) → abre 2A e 2B',
     ],
     certa: 1,
-    porque: 'Sequência do material: 50BN (2A) → 86-3 (2A), com abertura do disjuntor 2A e abertura e bloqueio do disjuntor de junção.',
+    porque: 'Com os gerais fechados e a junção normalmente aberta: 50BN (2A) → 86-3 (2A), com abertura do disjuntor 2A e bloqueio do fechamento da junção J.',
   },
   {
     q: 'Quais relés de bloqueio reverso existem em cada disjuntor de junção?',
@@ -146,11 +147,12 @@ const perguntas = [
 
 // ---------------------------------------------------------------------------
 
-function Disjuntor({ x, y, id, aberto, vertical = true }) {
+function Disjuntor({ x, y, id, aberto, fechamentoBloqueado = false, vertical = true }) {
   const w = vertical ? 18 : 26;
   const h = vertical ? 26 : 18;
   return (
     <g className="br-disjuntor">
+      <title>{`Disjuntor ${id}: ${aberto ? 'aberto' : 'fechado'}${fechamentoBloqueado ? ', fechamento bloqueado' : ''}`}</title>
       <rect
         x={x - w / 2}
         y={y - h / 2}
@@ -158,8 +160,8 @@ function Disjuntor({ x, y, id, aberto, vertical = true }) {
         height={h}
         rx="3"
         fill={aberto ? '#16a34a' : '#dc2626'}
-        stroke="#0f172a"
-        strokeWidth="1.2"
+        stroke={fechamentoBloqueado ? '#4f46e5' : '#0f172a'}
+        strokeWidth={fechamentoBloqueado ? 3 : 1.2}
         className={aberto ? 'br-abrindo' : ''}
       />
       <text x={x + (vertical ? 14 : 0)} y={y + (vertical ? 4 : -16)} textAnchor={vertical ? 'start' : 'middle'} className="br-svg-label">
@@ -220,7 +222,8 @@ function SimuladorDefeito() {
   }
 
   const reles = atual?.reles || {};
-  const abertos = new Set(atual?.abertos || []);
+  const abertos = new Set(['J', ...(atual?.abertos || [])]);
+  const bloqueados = new Set(atual?.bloqueados || []);
   const morta = atual?.secaoMorta;
   const sufixo = tipo === 'ft' ? 'N' : '';
   const corBarra = (lado) => (morta === lado ? '#94a3b8' : '#0f766e');
@@ -248,7 +251,9 @@ function SimuladorDefeito() {
         </span>
       </div>
 
-      <svg viewBox="0 0 720 330" className="br-sim-svg" role="img" aria-label="Diagrama unifilar simplificado: dois disjuntores gerais, junção de barras e dois alimentadores">
+      <p className="br-sim-hint">Condição normal: gerais 2A e 2B fechados; junção J aberta.</p>
+
+      <svg viewBox="0 0 720 330" className="br-sim-svg" role="img" aria-label="Diagrama unifilar simplificado: dois disjuntores gerais, junção de barras normalmente aberta e dois alimentadores">
         <defs>
           <pattern id="br-grid" width="20" height="20" patternUnits="userSpaceOnUse">
             <path d="M20 0H0V20" fill="none" stroke="#eef2f7" strokeWidth="1" />
@@ -286,7 +291,7 @@ function SimuladorDefeito() {
 
         <Disjuntor x={100} y={115} id="2A" aberto={abertos.has('2A')} />
         <Disjuntor x={620} y={115} id="2B" aberto={abertos.has('2B')} />
-        <Disjuntor x={360} y={160} id="J" aberto={abertos.has('J')} vertical={false} />
+        <Disjuntor x={360} y={160} id="J" aberto={abertos.has('J')} fechamentoBloqueado={bloqueados.has('J')} vertical={false} />
         <Disjuntor x={210} y={215} id="4A" aberto={abertos.has('4A')} />
         <Disjuntor x={510} y={215} id="4B" aberto={abertos.has('4B')} />
 
@@ -324,6 +329,7 @@ function SimuladorDefeito() {
       <div className="br-legenda">
         <span><i style={{ background: '#dc2626' }} /> Disjuntor fechado</span>
         <span><i style={{ background: '#16a34a' }} /> Disjuntor aberto</span>
+        {bloqueados.has('J') && <span><i style={{ background: '#16a34a', borderColor: '#4f46e5' }} /> Junção aberta — fechamento bloqueado</span>}
         <span><i style={{ background: '#fef3c7', borderColor: '#d97706' }} /> Sensibiliza</span>
         <span><i style={{ background: '#e0e7ff', borderColor: '#4f46e5' }} /> Bloqueado</span>
         <span><i style={{ background: '#fee2e2', borderColor: '#dc2626' }} /> Opera</span>
@@ -557,7 +563,7 @@ export function ProtecaoBloqueioReversoView({ onBackHome }) {
               </article>
               <article>
                 <span className="br-code">F.86-3</span>
-                <p>Relé auxiliar de bloqueio: abre e bloqueia os disjuntores da seção defeituosa e dá alarme.</p>
+                <p>Relé auxiliar de bloqueio: abre o geral da seção defeituosa, bloqueia o fechamento da junção e dá alarme.</p>
               </article>
             </div>
             <div className="br-onde">

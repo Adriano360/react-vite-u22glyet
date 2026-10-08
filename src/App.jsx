@@ -7,6 +7,7 @@ import { GestorView } from './components/training/GestorView';
 import { HomeView } from './components/training/HomeView';
 import { LoginView } from './components/training/LoginView';
 import { ProtecaoDiferencialBarrasView } from './components/training/ProtecaoDiferencialBarrasView';
+import { ProtecaoBloqueioReversoView } from './components/training/ProtecaoBloqueioReversoView';
 import { SimuladorView } from './components/training/SimuladorView';
 import { SiteFooter } from './components/training/SiteFooter';
 import { TrainingHeader } from './components/training/TrainingHeader';
@@ -14,12 +15,16 @@ import { TransformadoresInstrumentosView } from './components/training/Transform
 import { cenarios } from './data/cenariosProtecao';
 
 const PROTECAO_DIFERENCIAL_BARRAS_ROUTE = '/treinamento/protecao/diferencial-barras-13-8kv';
+const PROTECAO_BLOQUEIO_REVERSO_ROUTE = '/treinamento/protecao/bloqueio-reverso-13-8kv';
 const TRANSFORMADORES_INSTRUMENTOS_ROUTE = '/treinamento/transformadores/transformadores-instrumentos';
 const TRANSFORMADORES_TC_ROUTE = '/treinamento/transformadores/tc';
 
 function telaInicialPelaRota() {
   if (window.location.pathname === PROTECAO_DIFERENCIAL_BARRAS_ROUTE) {
     return 'protecao-diferencial-barras';
+  }
+  if (window.location.pathname === PROTECAO_BLOQUEIO_REVERSO_ROUTE) {
+    return 'protecao-bloqueio-reverso';
   }
 
   if ([TRANSFORMADORES_INSTRUMENTOS_ROUTE, TRANSFORMADORES_TC_ROUTE].includes(window.location.pathname)) {
@@ -182,6 +187,7 @@ export default function App() {
   function navegarParaTela(proximaTela) {
     const rotasPorTela = {
       'protecao-diferencial-barras': PROTECAO_DIFERENCIAL_BARRAS_ROUTE,
+      'protecao-bloqueio-reverso': PROTECAO_BLOQUEIO_REVERSO_ROUTE,
       'transformadores-instrumentos': TRANSFORMADORES_INSTRUMENTOS_ROUTE,
     };
     const rota = rotasPorTela[proximaTela] || '/';
@@ -416,6 +422,10 @@ export default function App() {
 
         {tela === 'protecao-diferencial-barras' && (
           <ProtecaoDiferencialBarrasView onBackHome={() => navegarParaTela('home')} />
+        )}
+
+        {tela === 'protecao-bloqueio-reverso' && (
+          <ProtecaoBloqueioReversoView onBackHome={() => navegarParaTela('home')} />
         )}
       </div>
 

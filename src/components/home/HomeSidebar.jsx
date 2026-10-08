@@ -26,7 +26,7 @@ const protectionItems = [
   { id: 'nocoes-reles', label: 'Noções básicas sobre relés', area: 'Sistema elétrico', target: 'simulador' },
   { id: 'alimentadores', label: 'Proteções de alimentadores', area: 'Alimentadores', target: 'simulador' },
   { id: 'bancos-capacitores', label: 'Proteções de bancos de capacitores', target: 'simulador' },
-  { id: 'bloqueio-reverso', label: 'Proteção de barras — Bloqueio Reverso', area: 'Barra 13,8 kV', target: 'simulador' },
+  { id: 'bloqueio-reverso', label: 'Proteção de barras — Bloqueio Reverso', target: 'protecao-bloqueio-reverso' },
   { id: 'barra-terra-isolada', label: 'Proteção de barra 13 kV — Terra Isolada', area: 'Barra 13,8 kV', target: 'simulador' },
   { id: 'barras-bloqueio', label: 'Proteção de barras — Bloqueio', area: 'Falha de disjuntor', target: 'simulador' },
   { id: 'diferencial-barras', label: 'Proteção diferencial de barras', area: 'Diferencial de barras', target: 'simulador' },

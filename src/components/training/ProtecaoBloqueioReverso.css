@@ -315,3 +315,142 @@
 .br-quiz,
 .br-quiz-q { min-width: 0; }
 .br-page .protection-table-wrap { max-width: 100%; overflow-x: auto; }
+
+/* ===== Versão enxuta: uma etapa por vez ===== */
+.br-page { max-width: 760px; margin: 0 auto; }
+.br-hero {
+  padding: 22px 20px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #0b3b3a, #0f766e);
+  color: #fff;
+}
+.br-hero h1 { margin: 10px 0 0; font-size: 30px; line-height: 1.1; color: #fff; }
+
+.br-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  gap: 6px;
+  margin: 14px 0 0;
+  padding: 8px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  background: #f5f8f8;
+  scroll-margin-top: 70px;
+}
+.br-tabs::-webkit-scrollbar { display: none; }
+.br-tabs button {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 6px 12px 6px 6px;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #475569;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+.br-tabs button span {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #e2e8f0;
+  font-size: 12px;
+}
+.br-tabs button.feito span { background: #99f6e4; color: #0f766e; }
+.br-tabs button.ativo { background: #0f766e; border-color: #0f766e; color: #fff; }
+.br-tabs button.ativo span { background: #fff; color: #0f766e; }
+
+.br-etapa {
+  margin-top: 10px;
+  padding: 18px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid #e5eeee;
+  animation: br-surge .3s ease-out;
+}
+.br-etapa h2 { margin: 0 0 14px; font-size: 21px; color: #0f172a; }
+.br-lead { margin: 0 0 14px; font-size: 16.5px; line-height: 1.6; color: #334155; }
+
+.br-reles { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.br-reles li { display: flex; align-items: center; gap: 12px; color: #334155; font-size: 15.5px; }
+.br-reles .br-code { min-width: 62px; text-align: center; }
+
+.br-mais, .br-tabela, .br-legenda-box { margin-top: 12px; }
+.br-mais summary, .br-tabela summary, .br-legenda-box summary {
+  cursor: pointer;
+  color: #0f766e;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 6px 0;
+}
+.br-mais p { margin: 6px 0 0; color: #475569; line-height: 1.55; }
+
+.br-sim { border: 0; padding: 0; }
+.br-sim .br-segmented { margin-bottom: 10px; }
+.br-caption { margin: 6px 0 0; font-size: 13px; color: #64748b; text-align: center; }
+.br-cta { margin: 14px 0 8px; font-weight: 800; color: #0f172a; }
+.br-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.br-grid2 button { justify-content: center; border-radius: 12px; padding: 8px; font-size: 14px; }
+.br-secoes button { min-width: 48px; justify-content: center; }
+
+.br-passo {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 14px;
+  background: #f0fdfa;
+  border: 1px solid #99f6e4;
+}
+.br-passo-topo { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.br-chip-local {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #b45309;
+}
+.br-dots { display: inline-flex; gap: 5px; }
+.br-dots i { width: 22px; height: 6px; border-radius: 99px; background: #ccfbf1; }
+.br-dots i.on { background: #0f766e; }
+.br-passo-texto { margin: 10px 0 0; color: #0f172a; line-height: 1.55; font-size: 15.5px; animation: br-surge .3s ease-out; }
+.br-passo .br-resumo { margin-top: 10px; background: #fff; }
+.br-passo-acoes { display: flex; gap: 8px; margin-top: 12px; }
+.br-passo-acoes button, .br-nav button, .br-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 1px solid #0f766e;
+  background: #0f766e;
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+.br-passo-acoes button:not(.icone) { flex: 1; }
+.br-passo-acoes button.sec, .br-nav button.sec { background: #fff; color: #0f766e; }
+.br-passo-acoes button:disabled, .br-nav button:disabled { opacity: .35; cursor: default; }
+
+.br-nav { display: flex; justify-content: space-between; gap: 10px; margin: 14px 0 6px; }
+
+.br-quiz-placar { position: static; box-shadow: none; border: 0; padding: 0; background: none; }
+.br-btn { width: 100%; }
+.br-quiz-final {
+  flex-direction: column;
+  text-align: center;
+  padding: 24px;
+  gap: 8px;
+}
+.br-quiz-nota { font-size: 44px; font-weight: 900; color: #5eead4; line-height: 1; }
+.br-quiz-final button { background: #fff; color: #0f766e; }

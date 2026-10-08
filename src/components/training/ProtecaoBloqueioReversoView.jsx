@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, CheckCircle2, ChevronRight, Pause, Play, RotateCcw, XCircle, Zap } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, CheckCircle2, RotateCcw, XCircle, Zap } from 'lucide-react';
 import './ProtecaoBloqueioReverso.css';
 
 // Fonte técnica: apresentação "07.1 - Proteção de barras - Bloqueio Reverso"
 // (CFM - Curso de Formação de Mantenedores). Conteúdo restrito ao que está no material.
 
 const roteiro = [
-  { id: 'introducao', label: 'Introdução' },
-  { id: 'reles', label: 'Relés do esquema' },
-  { id: 'simulador', label: 'Simulador de defeito' },
-  { id: 'seletividade', label: 'Seletividade e 86-3' },
-  { id: 'teste', label: 'Teste rápido' },
+  { id: 'introducao', label: 'Conceito' },
+  { id: 'reles', label: 'Relés' },
+  { id: 'simulador', label: 'Simulador' },
+  { id: 'seletividade', label: 'Qual 86-3?' },
+  { id: 'teste', label: 'Teste' },
 ];
 
 const tabela863 = [
@@ -41,7 +41,7 @@ function montarCenario(local, tipo) {
 
   if (local.startsWith('alim')) {
     return {
-      resumo: `Defeito no alimentador: só o disjuntor ${alim} abre. A barra continua energizada.`,
+      resumo: `Só o alimentador ${alim} é desligado. A barra continua energizada.`,
       passos: [
         {
           texto: `Curto-circuito ${nomeDefeito} no alimentador ${alim}. A corrente de defeito passa pelo disjuntor geral ${geral} e pelo alimentador ${alim}.`,
@@ -63,7 +63,7 @@ function montarCenario(local, tipo) {
   }
 
   return {
-    resumo: `Defeito na seção ${lado}: o geral ${geral} abre e o fechamento da junção J é bloqueado. A seção ${lado} e o alimentador ${alim} ficam sem energia. A junção permanece aberta e a seção ${lado === 'A' ? 'B' : 'A'} continua alimentada.`,
+    resumo: `Só a seção ${lado} fica sem energia. A seção ${lado === 'A' ? 'B' : 'A'} continua alimentada.`,
     passos: [
       {
         texto: `Defeito ${nomeDefeito} na seção ${lado} do barramento, entre o geral ${geral} e a junção J. Nenhum alimentador enxerga o defeito, então não há sinal de bloqueio.`,
@@ -76,7 +76,7 @@ function montarCenario(local, tipo) {
         abertos: [],
       },
       {
-        texto: `O 86-3 (${geral}) abre o disjuntor geral ${geral} e bloqueia o fechamento do disjuntor de junção J, que já está aberto na condição normal. A seção ${lado} e seus alimentadores ficam sem energia, mesmo com os disjuntores dos alimentadores fechados. Só a seção defeituosa é isolada — essa é a seletividade do esquema.`,
+        texto: `O 86-3 (${geral}) abre o geral ${geral} e bloqueia o fechamento da junção J (que já fica aberta). A seção ${lado} e seus alimentadores ficam sem energia.`,
         reles: { [geral]: 'opera' },
         abertos: [geral, 'J'],
         bloqueados: ['J'],
@@ -211,7 +211,6 @@ function SimuladorDefeito() {
   function escolher(id) {
     setLocal(id);
     setPasso(0);
-    setAuto(true);
   }
 
   function reiniciar() {
@@ -238,21 +237,14 @@ function SimuladorDefeito() {
 
   return (
     <div className="br-sim">
-      <div className="br-sim-toolbar">
-        <div className="br-segmented" role="group" aria-label="Tipo de defeito">
-          <button type="button" className={tipo === 'ft' ? 'ativo' : ''} onClick={() => { setTipo('ft'); setPasso(0); }}>
-            Fase-terra
-          </button>
-          <button type="button" className={tipo === 'ff' ? 'ativo' : ''} onClick={() => { setTipo('ff'); setPasso(0); }}>
-            Fase-fase
-          </button>
-        </div>
-        <span className="br-sim-hint">
-          {local ? 'Acompanhe a sequência ou escolha outro ponto.' : 'Toque em um ponto ⚡ do diagrama para aplicar o defeito.'}
-        </span>
+      <div className="br-segmented" role="group" aria-label="Tipo de defeito">
+        <button type="button" className={tipo === 'ft' ? 'ativo' : ''} onClick={() => { setTipo('ft'); setPasso(0); }}>
+          Fase-terra
+        </button>
+        <button type="button" className={tipo === 'ff' ? 'ativo' : ''} onClick={() => { setTipo('ff'); setPasso(0); }}>
+          Fase-fase
+        </button>
       </div>
-
-      <p className="br-sim-hint">Condição normal: gerais 2A e 2B fechados; junção J aberta.</p>
 
       <svg viewBox="0 0 720 330" className="br-sim-svg" role="img" aria-label="Diagrama unifilar simplificado: dois disjuntores gerais, junção de barras normalmente aberta e dois alimentadores">
         <defs>
@@ -330,51 +322,64 @@ function SimuladorDefeito() {
         })}
       </svg>
 
-      <div className="br-legenda">
-        <span><i style={{ background: '#0f766e' }} /> Circuito energizado</span>
-        <span><i style={{ background: '#94a3b8' }} /> Circuito sem energia</span>
-        <span><i style={{ background: '#dc2626' }} /> Disjuntor fechado</span>
-        <span><i style={{ background: '#16a34a' }} /> Disjuntor aberto</span>
-        {bloqueados.has('J') && <span><i style={{ background: '#16a34a', borderColor: '#4f46e5' }} /> Junção aberta — fechamento bloqueado</span>}
-        <span><i style={{ background: '#fef3c7', borderColor: '#d97706' }} /> Sensibiliza</span>
-        <span><i style={{ background: '#e0e7ff', borderColor: '#4f46e5' }} /> Bloqueado</span>
-        <span><i style={{ background: '#fee2e2', borderColor: '#dc2626' }} /> Opera</span>
-      </div>
+      <p className="br-caption">Normal: gerais 2A e 2B fechados · junção J aberta.</p>
 
-      <div className="br-locais">
-        {locais.map((l) => (
-          <button key={l.id} type="button" className={local === l.id ? 'ativo' : ''} onClick={() => escolher(l.id)}>
-            <Zap size={14} /> {l.label}
-          </button>
-        ))}
-      </div>
+      {!cenario && (
+        <>
+          <p className="br-cta">Onde ocorre o defeito?</p>
+          <div className="br-locais br-grid2">
+            {locais.map((l) => (
+              <button key={l.id} type="button" onClick={() => escolher(l.id)}>
+                <Zap size={14} /> {l.label}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
 
       {cenario && (
-        <div className="br-passos" aria-live="polite">
-          <ol>
-            {cenario.passos.map((p, i) => (
-              <li key={i} className={i === passo ? 'atual' : i < passo ? 'feito' : ''}>
-                <button type="button" onClick={() => { setPasso(i); setAuto(false); }}>
-                  <span className="br-num">{i + 1}</span>
-                  <span>{p.texto}</span>
-                </button>
-              </li>
-            ))}
-          </ol>
+        <div className="br-passo" aria-live="polite">
+          <div className="br-passo-topo">
+            <span className="br-chip-local"><Zap size={13} /> {locais.find((l) => l.id === local)?.label}</span>
+            <span className="br-dots" aria-label={`Passo ${passo + 1} de ${cenario.passos.length}`}>
+              {cenario.passos.map((_, i) => <i key={i} className={i <= passo ? 'on' : ''} />)}
+            </span>
+          </div>
+          <p key={`${local}-${tipo}-${passo}`} className="br-passo-texto">
+            <strong>{passo + 1}.</strong> {atual.texto}
+          </p>
           {ultimo && <p className="br-resumo"><CheckCircle2 size={18} /> {cenario.resumo}</p>}
-          <div className="br-passos-acoes">
-            <button type="button" onClick={() => setAuto((a) => !a)} disabled={ultimo}>
-              {auto ? <Pause size={16} /> : <Play size={16} />} {auto ? 'Pausar' : 'Reproduzir'}
+          <div className="br-passo-acoes">
+            <button type="button" className="sec icone" aria-label="Passo anterior" disabled={passo === 0}
+              onClick={() => { setPasso((v) => Math.max(v - 1, 0)); setAuto(false); }}>
+              <ChevronLeft size={18} />
             </button>
-            <button type="button" onClick={() => { setPasso((p) => Math.min(p + 1, cenario.passos.length - 1)); setAuto(false); }} disabled={ultimo}>
-              Próximo passo <ChevronRight size={16} />
-            </button>
-            <button type="button" className="sec" onClick={reiniciar}>
-              <RotateCcw size={16} /> Reiniciar
-            </button>
+            {!ultimo ? (
+              <button type="button" onClick={() => { setPasso((v) => v + 1); setAuto(false); }}>
+                Próximo <ChevronRight size={16} />
+              </button>
+            ) : (
+              <button type="button" onClick={reiniciar}>
+                <RotateCcw size={16} /> Outro defeito
+              </button>
+            )}
           </div>
         </div>
       )}
+
+      <details className="br-legenda-box">
+        <summary>Legenda</summary>
+        <div className="br-legenda">
+          <span><i style={{ background: '#0f766e' }} /> Energizado</span>
+          <span><i style={{ background: '#94a3b8' }} /> Sem energia</span>
+          <span><i style={{ background: '#dc2626' }} /> Disjuntor fechado</span>
+          <span><i style={{ background: '#16a34a' }} /> Disjuntor aberto</span>
+          <span><i style={{ background: '#16a34a', borderColor: '#4f46e5' }} /> Fechamento bloqueado</span>
+          <span><i style={{ background: '#fef3c7', borderColor: '#d97706' }} /> Relé sensibiliza</span>
+          <span><i style={{ background: '#e0e7ff', borderColor: '#4f46e5' }} /> Relé bloqueado</span>
+          <span><i style={{ background: '#fee2e2', borderColor: '#dc2626' }} /> Relé opera</span>
+        </div>
+      </details>
     </div>
   );
 }
@@ -386,11 +391,11 @@ function Consulta863() {
 
   return (
     <div className="br-863">
-      <p className="br-863-pergunta">Defeito em qual seção da barra 3P?</p>
-      <div className="br-locais">
+      <p className="br-cta">Defeito em qual seção da barra 3P?</p>
+      <div className="br-locais br-secoes">
         {secoes.map((s) => (
           <button key={s} type="button" className={secao === s ? 'ativo' : ''} onClick={() => setSecao(s)}>
-            Seção {s}
+            {s}
           </button>
         ))}
       </div>
@@ -404,6 +409,8 @@ function Consulta863() {
         </div>
       )}
 
+      <details className="br-tabela">
+        <summary>Ver tabela completa</summary>
       <div className="protection-table-wrap">
         <table className="protection-reference-table">
           <thead>
@@ -428,61 +435,70 @@ function Consulta863() {
           </tbody>
         </table>
       </div>
-      <p className="br-fonte">Tabela da instalação apresentada no material do curso. (*) disjuntor desligado e bloqueado.</p>
+      <p className="br-fonte">(*) disjuntor desligado e bloqueado.</p>
+      </details>
     </div>
   );
 }
 
 function TesteRapido() {
+  const [indice, setIndice] = useState(0);
   const [respostas, setRespostas] = useState({});
   const total = perguntas.length;
-  const respondidas = Object.keys(respostas).length;
+  const fim = indice >= total;
   const acertos = perguntas.filter((p, i) => respostas[i] === p.certa).length;
+
+  if (fim) {
+    const pct = Math.round((acertos / total) * 100);
+    return (
+      <div className="br-quiz-final">
+        <span className="br-quiz-nota">{pct}%</span>
+        <strong>{acertos} de {total} corretas</strong>
+        <button type="button" onClick={() => { setRespostas({}); setIndice(0); }}>
+          <RotateCcw size={16} /> Refazer
+        </button>
+      </div>
+    );
+  }
+
+  const p = perguntas[indice];
+  const r = respostas[indice];
+  const feito = r !== undefined;
 
   return (
     <div className="br-quiz">
       <div className="br-quiz-placar">
-        <span>{respondidas} de {total} respondidas</span>
-        <div className="br-barra"><div style={{ width: `${(respondidas / total) * 100}%` }} /></div>
-        <strong>{acertos} acerto{acertos === 1 ? '' : 's'}</strong>
+        <span>Pergunta {indice + 1} de {total}</span>
+        <div className="br-barra"><div style={{ width: `${(indice / total) * 100}%` }} /></div>
       </div>
-
-      {perguntas.map((p, i) => {
-        const r = respostas[i];
-        const feito = r !== undefined;
-        return (
-          <fieldset key={i} className="br-quiz-q">
-            <legend>{i + 1}. {p.q}</legend>
-            {p.opcoes.map((o, j) => {
-              const estado = feito ? (j === p.certa ? 'certa' : j === r ? 'errada' : '') : '';
-              return (
-                <button
-                  key={j}
-                  type="button"
-                  className={`br-opcao ${estado}`}
-                  disabled={feito}
-                  onClick={() => setRespostas((prev) => ({ ...prev, [i]: j }))}
-                >
-                  {estado === 'certa' && <CheckCircle2 size={16} />}
-                  {estado === 'errada' && <XCircle size={16} />}
-                  {o}
-                </button>
-              );
-            })}
-            {feito && (
-              <p className={`br-feedback ${r === p.certa ? 'ok' : 'nok'}`}>
-                <strong>{r === p.certa ? 'Correto!' : 'Ainda não.'}</strong> {p.porque}
-              </p>
-            )}
-          </fieldset>
-        );
-      })}
-
-      {respondidas === total && (
-        <div className="br-quiz-final">
-          <strong>Resultado: {acertos} de {total} ({Math.round((acertos / total) * 100)}%)</strong>
-          <button type="button" onClick={() => setRespostas({})}><RotateCcw size={16} /> Refazer teste</button>
-        </div>
+      <fieldset className="br-quiz-q" key={indice}>
+        <legend>{p.q}</legend>
+        {p.opcoes.map((o, j) => {
+          const estado = feito ? (j === p.certa ? 'certa' : j === r ? 'errada' : '') : '';
+          return (
+            <button
+              key={j}
+              type="button"
+              className={`br-opcao ${estado}`}
+              disabled={feito}
+              onClick={() => setRespostas((prev) => ({ ...prev, [indice]: j }))}
+            >
+              {estado === 'certa' && <CheckCircle2 size={16} />}
+              {estado === 'errada' && <XCircle size={16} />}
+              {o}
+            </button>
+          );
+        })}
+        {feito && (
+          <p className={`br-feedback ${r === p.certa ? 'ok' : 'nok'}`}>
+            <strong>{r === p.certa ? 'Correto!' : 'Ainda não.'}</strong> {p.porque}
+          </p>
+        )}
+      </fieldset>
+      {feito && (
+        <button type="button" className="br-btn" onClick={() => setIndice((v) => v + 1)}>
+          {indice + 1 < total ? 'Próxima pergunta' : 'Ver resultado'} <ChevronRight size={16} />
+        </button>
       )}
     </div>
   );
@@ -490,7 +506,67 @@ function TesteRapido() {
 
 // ---------------------------------------------------------------------------
 
+function Conceito() {
+  return (
+    <>
+      <p className="br-lead">
+        Protege o barramento de 13,8 kV contra defeitos <strong>fase-fase</strong> e <strong>fase-terra</strong> —
+        desligando <strong>só a seção com defeito</strong>.
+      </p>
+      <div className="br-compare">
+        <article>
+          <small>Proteção tipo bloqueio</small>
+          <strong>Não seletiva</strong>
+        </article>
+        <article className="destaque">
+          <small>Bloqueio reverso</small>
+          <strong>Seletiva</strong>
+        </article>
+      </div>
+    </>
+  );
+}
+
+function Reles() {
+  return (
+    <>
+      <ul className="br-reles">
+        <li><span className="br-code">50B</span> Defeito fase-fase</li>
+        <li><span className="br-code">50BN</span> Defeito fase-terra</li>
+        <li><span className="br-code">86-3</span> Abre o geral, bloqueia a junção e dá alarme</li>
+      </ul>
+      <div className="br-onde">
+        <div><strong>Disjuntor geral</strong><span>50B · 50BN · 86-3</span></div>
+        <div><strong>Disjuntor de junção</strong><span>50B · 50BN</span></div>
+      </div>
+      <details className="br-mais">
+        <summary>Circuito de comando</summary>
+        <p>
+          Os contatos de 50Ba, 50Bb, 50Bc e 50BN, em paralelo no 132 Vcc, energizam o 86-3, que comanda a
+          abertura do disjuntor, o alarme e os demais desligamentos do esquema.
+        </p>
+      </details>
+    </>
+  );
+}
+
+const etapas = [
+  { id: 'introducao', titulo: 'O que é o bloqueio reverso', Conteudo: Conceito },
+  { id: 'reles', titulo: 'Relés do esquema', Conteudo: Reles },
+  { id: 'simulador', titulo: 'Simule um defeito', Conteudo: SimuladorDefeito },
+  { id: 'seletividade', titulo: 'Qual 86-3 atua?', Conteudo: Consulta863 },
+  { id: 'teste', titulo: 'Teste rápido', Conteudo: TesteRapido },
+];
+
 export function ProtecaoBloqueioReversoView({ onBackHome }) {
+  const [etapa, setEtapa] = useState(0);
+  const { titulo, Conteudo } = etapas[etapa];
+
+  function ir(i) {
+    setEtapa(i);
+    document.querySelector('.br-tabs')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   return (
     <div className="protection-lesson-page br-page">
       <button type="button" className="lesson-back-button" onClick={onBackHome}>
@@ -498,130 +574,39 @@ export function ProtecaoBloqueioReversoView({ onBackHome }) {
         Voltar para Início
       </button>
 
-      <section className="protection-hero">
-        <img
-          className="protection-hero-bg"
-          src="/images/protecao-diferencial-barras/painel-subestacao-13-8kv.jpg"
-          alt=""
-          aria-hidden="true"
-        />
-        <div className="protection-hero-overlay" aria-hidden="true" />
-        <div className="protection-hero-content">
-          <span className="protection-kicker">Aula técnica para mantenedores</span>
-          <h1>Proteção de barras 13,8&nbsp;kV <span className="protection-title-break" />Bloqueio reverso</h1>
-          <p>
-            Entenda como o esquema identifica a seção de barra com defeito, por que o relé do geral
-            não atua para defeitos no alimentador e qual 86-3 opera em cada seção.
-          </p>
-        </div>
+      <section className="br-hero">
+        <span className="protection-kicker">Proteção de barras 13,8 kV</span>
+        <h1>Bloqueio reverso</h1>
       </section>
 
-      <div className="protection-layout">
-        <aside className="protection-sidebar" aria-label="Roteiro lateral da aula">
-          <strong>Roteiro da aula</strong>
-          <nav>
-            {roteiro.map((r) => (
-              <a key={r.id} href={`#${r.id}`}>{r.label}</a>
-            ))}
-          </nav>
-        </aside>
+      <nav className="br-tabs" aria-label="Etapas da aula">
+        {roteiro.map((r, i) => (
+          <button
+            key={r.id}
+            type="button"
+            className={i === etapa ? 'ativo' : i < etapa ? 'feito' : ''}
+            aria-current={i === etapa ? 'step' : undefined}
+            onClick={() => ir(i)}
+          >
+            <span>{i + 1}</span> {r.label}
+          </button>
+        ))}
+      </nav>
 
-        <div className="protection-content">
-          <section id="introducao" className="protection-section">
-            <div className="protection-section-copy">
-              <h2>Introdução</h2>
-              <p>
-                A proteção de barras de 13,8 kV tem por finalidade proteger o barramento para defeitos
-                envolvendo <strong>fase-fase</strong> e <strong>fase-terra</strong>.
-              </p>
-              <p>
-                Ao contrário da proteção tipo bloqueio, que não é seletiva, o bloqueio reverso consegue
-                identificar a <strong>seção de barra defeituosa</strong> e isolar somente ela. Essa
-                seletividade é a característica principal do esquema.
-              </p>
-            </div>
-            <div className="br-compare">
-              <article>
-                <small>Proteção tipo bloqueio</small>
-                <strong>Não seletiva</strong>
-                <p>Não identifica qual seção da barra está com defeito.</p>
-              </article>
-              <article className="destaque">
-                <small>Bloqueio reverso</small>
-                <strong>Seletiva</strong>
-                <p>Isola só a seção com defeito; as demais seguem em serviço.</p>
-              </article>
-            </div>
-          </section>
+      <section className="br-etapa" key={etapa}>
+        <h2>{titulo}</h2>
+        <Conteudo />
+      </section>
 
-          <section id="reles" className="protection-section">
-            <div className="protection-section-copy">
-              <h2>Relés que compõem o esquema</h2>
-            </div>
-            <div className="br-cards">
-              <article>
-                <span className="br-code">F.50B</span>
-                <p>Sobrecorrente instantânea de barra para defeito <strong>fase-fase</strong> (fases a, b, c).</p>
-              </article>
-              <article>
-                <span className="br-code">F.50BN</span>
-                <p>Sobrecorrente instantânea de barra para defeito <strong>fase-terra</strong>.</p>
-              </article>
-              <article>
-                <span className="br-code">F.86-3</span>
-                <p>Relé auxiliar de bloqueio: abre o geral da seção defeituosa, bloqueia o fechamento da junção e dá alarme.</p>
-              </article>
-            </div>
-            <div className="br-onde">
-              <div><strong>Cada disjuntor geral</strong><span>50B · 50BN · 86-3</span></div>
-              <div><strong>Cada disjuntor de junção</strong><span>50B · 50BN</span></div>
-            </div>
-            <div className="protection-maintainer-note">
-              <strong>Circuito de comando</strong>
-              <p>
-                Os contatos de 50Ba, 50Bb, 50Bc e 50BN, em paralelo no 132 Vcc, energizam o 86-3, que comanda a
-                abertura do disjuntor, o alarme e os demais desligamentos do esquema.
-              </p>
-            </div>
-          </section>
-
-          <section id="simulador" className="protection-section">
-            <div className="protection-section-copy">
-              <h2>Simulador de defeito</h2>
-              <p>
-                Escolha o tipo e o local do defeito e veja, passo a passo, quais relés sensibilizam, quais são
-                bloqueados e quais disjuntores abrem.
-              </p>
-            </div>
-            <SimuladorDefeito />
-            <div className="protection-maintainer-note">
-              <strong>Observação operacional</strong>
-              <p>
-                Diagrama didático simplificado. Na análise de uma ocorrência real, siga os diagramas da
-                instalação e os procedimentos internos.
-              </p>
-            </div>
-          </section>
-
-          <section id="seletividade" className="protection-section">
-            <div className="protection-section-copy">
-              <h2>Seletividade: qual 86-3 atua?</h2>
-              <p>
-                Cada geral possui o seu 50B, 50BN e 86-3, e cada junção possui o seu 50B e 50BN. É isso que
-                permite ao esquema desligar somente a seção com defeito. Escolha uma seção para consultar.
-              </p>
-            </div>
-            <Consulta863 />
-          </section>
-
-          <section id="teste" className="protection-section">
-            <div className="protection-section-copy">
-              <h2>Teste rápido</h2>
-              <p>Responda e veja a explicação na hora.</p>
-            </div>
-            <TesteRapido />
-          </section>
-        </div>
+      <div className="br-nav">
+        <button type="button" className="sec" disabled={etapa === 0} onClick={() => ir(etapa - 1)}>
+          <ChevronLeft size={16} /> Anterior
+        </button>
+        {etapa < etapas.length - 1 && (
+          <button type="button" onClick={() => ir(etapa + 1)}>
+            {roteiro[etapa + 1].label} <ChevronRight size={16} />
+          </button>
+        )}
       </div>
     </div>
   );

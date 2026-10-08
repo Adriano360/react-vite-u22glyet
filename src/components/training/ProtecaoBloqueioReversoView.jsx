@@ -9,17 +9,7 @@ const roteiro = [
   { id: 'introducao', label: 'Conceito' },
   { id: 'reles', label: 'Relés' },
   { id: 'simulador', label: 'Simulador' },
-  { id: 'seletividade', label: 'Qual 86-3?' },
   { id: 'teste', label: 'Teste' },
-];
-
-const tabela863 = [
-  { rele: '86-3 C7', principais: '50B/50BN 7C', disjuntores: '3105 e (*) 3188', juncao: '3188', secoes: [1, 10], barra: '3P (sec. 1 ou 10)' },
-  { rele: '86-3 D8', principais: '50B/50BN 8D', disjuntores: '3415 e (*) 3188', juncao: '3188', secoes: [9], barra: '3P (sec. 9)' },
-  { rele: '86-3 C8', principais: '50B/50BN 8C', disjuntores: '3211 e (*) 3126', juncao: '3126', secoes: [3], barra: '3P (sec. 3)' },
-  { rele: '86-3 C22', principais: '50B/50BN 22C', disjuntores: '3358 e (*) 3126', juncao: '3126', secoes: [4], barra: '3P (sec. 4)' },
-  { rele: '86-3 D9', principais: '50B/50BN 9D', disjuntores: '3596 e (*) 3805', juncao: '3805', secoes: [7], barra: '3P (sec. 7)' },
-  { rele: '86-3 D21', principais: '50B/50BN 21D', disjuntores: '3457 e (*) 3805', juncao: '3805', secoes: [6], barra: '3P (sec. 6)' },
 ];
 
 const locais = [
@@ -135,12 +125,6 @@ const perguntas = [
     opcoes: ['50B, 50BN e 86-3', 'Somente 86-3', '50B e 50BN', 'Somente 50/51N'],
     certa: 2,
     porque: 'Cada geral possui 50B, 50BN e 86-3; cada junção possui 50B e 50BN.',
-  },
-  {
-    q: 'Pela tabela da instalação, qual relé auxiliar atua para defeito na seção 9?',
-    opcoes: ['86-3 C7', '86-3 D8', '86-3 D9', '86-3 C22'],
-    certa: 1,
-    porque: '86-3 D8 (principais 50B/50BN 8D) desliga 3415 e desliga/bloqueia 3188 para defeito na 3P seção 9.',
   },
 ];
 
@@ -384,63 +368,6 @@ function SimuladorDefeito() {
   );
 }
 
-function Consulta863() {
-  const secoes = [1, 3, 4, 6, 7, 9, 10];
-  const [secao, setSecao] = useState(null);
-  const linha = tabela863.find((l) => l.secoes.includes(secao));
-
-  return (
-    <div className="br-863">
-      <p className="br-cta">Defeito em qual seção da barra 3P?</p>
-      <div className="br-locais br-secoes">
-        {secoes.map((s) => (
-          <button key={s} type="button" className={secao === s ? 'ativo' : ''} onClick={() => setSecao(s)}>
-            {s}
-          </button>
-        ))}
-      </div>
-
-      {linha && (
-        <div className="br-863-resposta" key={linha.rele}>
-          <div><small>Relé auxiliar que atua</small><strong>{linha.rele}</strong></div>
-          <div><small>Relés principais</small><strong>{linha.principais}</strong></div>
-          <div><small>Desliga e (*) bloqueia</small><strong>{linha.disjuntores}</strong></div>
-          <div><small>Disjuntor de junção</small><strong>{linha.juncao} aberto ou fechado</strong></div>
-        </div>
-      )}
-
-      <details className="br-tabela">
-        <summary>Ver tabela completa</summary>
-      <div className="protection-table-wrap">
-        <table className="protection-reference-table">
-          <thead>
-            <tr>
-              <th>Relé auxiliar</th>
-              <th>Relés principais</th>
-              <th>Desliga e (*) bloqueia</th>
-              <th>Estado da junção</th>
-              <th>Barra com defeito</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tabela863.map((l) => (
-              <tr key={l.rele} className={linha?.rele === l.rele ? 'br-linha-ativa' : ''}>
-                <td>{l.rele}</td>
-                <td>{l.principais}</td>
-                <td>{l.disjuntores}</td>
-                <td>{l.juncao} ⇒ aberto ou fechado</td>
-                <td>{l.barra}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <p className="br-fonte">(*) disjuntor desligado e bloqueado.</p>
-      </details>
-    </div>
-  );
-}
-
 function TesteRapido() {
   const [indice, setIndice] = useState(0);
   const [respostas, setRespostas] = useState({});
@@ -554,7 +481,6 @@ const etapas = [
   { id: 'introducao', titulo: 'O que é o bloqueio reverso', Conteudo: Conceito },
   { id: 'reles', titulo: 'Relés do esquema', Conteudo: Reles },
   { id: 'simulador', titulo: 'Simule um defeito', Conteudo: SimuladorDefeito },
-  { id: 'seletividade', titulo: 'Qual 86-3 atua?', Conteudo: Consulta863 },
   { id: 'teste', titulo: 'Teste rápido', Conteudo: TesteRapido },
 ];
 

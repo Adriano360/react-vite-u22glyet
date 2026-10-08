@@ -63,7 +63,7 @@ function montarCenario(local, tipo) {
   }
 
   return {
-    resumo: `Defeito na seção ${lado}: o geral ${geral} abre e o fechamento da junção J é bloqueado. A junção permanece aberta e a seção ${lado === 'A' ? 'B' : 'A'} continua alimentada.`,
+    resumo: `Defeito na seção ${lado}: o geral ${geral} abre e o fechamento da junção J é bloqueado. A seção ${lado} e o alimentador ${alim} ficam sem energia. A junção permanece aberta e a seção ${lado === 'A' ? 'B' : 'A'} continua alimentada.`,
     passos: [
       {
         texto: `Defeito ${nomeDefeito} na seção ${lado} do barramento, entre o geral ${geral} e a junção J. Nenhum alimentador enxerga o defeito, então não há sinal de bloqueio.`,
@@ -76,11 +76,10 @@ function montarCenario(local, tipo) {
         abertos: [],
       },
       {
-        texto: `O 86-3 (${geral}) abre o disjuntor geral ${geral} e bloqueia o fechamento do disjuntor de junção J, que já está aberto na condição normal. Só a seção defeituosa é isolada — essa é a seletividade do esquema.`,
+        texto: `O 86-3 (${geral}) abre o disjuntor geral ${geral} e bloqueia o fechamento do disjuntor de junção J, que já está aberto na condição normal. A seção ${lado} e seus alimentadores ficam sem energia, mesmo com os disjuntores dos alimentadores fechados. Só a seção defeituosa é isolada — essa é a seletividade do esquema.`,
         reles: { [geral]: 'opera' },
         abertos: [geral, 'J'],
         bloqueados: ['J'],
-        secaoMorta: lado,
       },
     ],
   };
@@ -224,9 +223,11 @@ function SimuladorDefeito() {
   const reles = atual?.reles || {};
   const abertos = new Set(['J', ...(atual?.abertos || [])]);
   const bloqueados = new Set(atual?.bloqueados || []);
-  const morta = atual?.secaoMorta;
   const sufixo = tipo === 'ft' ? 'N' : '';
-  const corBarra = (lado) => (morta === lado ? '#94a3b8' : '#0f766e');
+  const secaoEnergizada = (lado) => !abertos.has(`2${lado}`)
+    || (!abertos.has('J') && !abertos.has(`2${lado === 'A' ? 'B' : 'A'}`));
+  const corCircuito = (energizado) => (energizado ? '#0f766e' : '#94a3b8');
+  const corBarra = (lado) => corCircuito(secaoEnergizada(lado));
 
   const pontos = {
     alimA: { x: 210, y: 268 },
@@ -270,22 +271,25 @@ function SimuladorDefeito() {
             <circle cx={t.x} cy="58" r="13" fill="none" stroke="#334155" strokeWidth="2.5" />
             <text x={t.x + (t.x < 360 ? -22 : 22)} y="54" textAnchor={t.x < 360 ? 'end' : 'start'} className="br-svg-label">{t.n}</text>
             <text x={t.x + (t.x < 360 ? -22 : 22)} y="68" textAnchor={t.x < 360 ? 'end' : 'start'} className="br-svg-small">138-13,8 kV</text>
-            <line x1={t.x} y1="71" x2={t.x} y2="160" stroke="#334155" strokeWidth="3" />
+            <line x1={t.x} y1="71" x2={t.x} y2="115" stroke="#334155" strokeWidth="3" />
+            <line x1={t.x} y1="115" x2={t.x} y2="160" stroke={corBarra(t.x < 360 ? 'A' : 'B')} strokeWidth="3" />
           </g>
         ))}
 
         {/* Barramento 13,8 kV em duas seções */}
         <line x1="40" y1="160" x2="342" y2="160" stroke={corBarra('A')} strokeWidth="7" strokeLinecap="round" />
         <line x1="378" y1="160" x2="680" y2="160" stroke={corBarra('B')} strokeWidth="7" strokeLinecap="round" />
-        <line x1="342" y1="160" x2="378" y2="160" stroke="#334155" strokeWidth="3" />
+        <line x1="342" y1="160" x2="360" y2="160" stroke={corBarra('A')} strokeWidth="3" />
+        <line x1="360" y1="160" x2="378" y2="160" stroke={corBarra('B')} strokeWidth="3" />
         <text x="60" y="150" className="br-svg-small">Seção A</text>
         <text x="660" y="150" textAnchor="end" className="br-svg-small">Seção B</text>
 
         {/* Alimentadores */}
         {[{ x: 210, n: '4A' }, { x: 510, n: '4B' }].map((a) => (
           <g key={a.n}>
-            <line x1={a.x} y1="160" x2={a.x} y2="310" stroke={morta === a.n.slice(-1) ? '#94a3b8' : '#334155'} strokeWidth="3" />
-            <path d={`M${a.x - 6} 300 L${a.x} 312 L${a.x + 6} 300`} fill="none" stroke="#334155" strokeWidth="2" />
+            <line x1={a.x} y1="160" x2={a.x} y2="215" stroke={corBarra(a.n.slice(-1))} strokeWidth="3" />
+            <line x1={a.x} y1="215" x2={a.x} y2="310" stroke={corCircuito(secaoEnergizada(a.n.slice(-1)) && !abertos.has(a.n))} strokeWidth="3" />
+            <path d={`M${a.x - 6} 300 L${a.x} 312 L${a.x + 6} 300`} fill="none" stroke={corCircuito(secaoEnergizada(a.n.slice(-1)) && !abertos.has(a.n))} strokeWidth="2" />
           </g>
         ))}
 
@@ -327,6 +331,8 @@ function SimuladorDefeito() {
       </svg>
 
       <div className="br-legenda">
+        <span><i style={{ background: '#0f766e' }} /> Circuito energizado</span>
+        <span><i style={{ background: '#94a3b8' }} /> Circuito sem energia</span>
         <span><i style={{ background: '#dc2626' }} /> Disjuntor fechado</span>
         <span><i style={{ background: '#16a34a' }} /> Disjuntor aberto</span>
         {bloqueados.has('J') && <span><i style={{ background: '#16a34a', borderColor: '#4f46e5' }} /> Junção aberta — fechamento bloqueado</span>}

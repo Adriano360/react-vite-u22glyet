@@ -18,7 +18,7 @@ if (!process.env.OPENAI_API_KEY && fs.existsSync(localEnvPath)) {
 
 const isProduction = process.argv.includes('--production');
 const port = Number(process.env.PORT) || 5173;
-const host = process.env.HOST || '0.0.0.0';
+const host = process.env.HOST || '127.0.0.1';
 const rateLimits = new Map();
 
 const AGENT_INSTRUCTIONS = `

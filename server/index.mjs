@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import express from 'express';
 import OpenAI from 'openai';
 import { createServer as createViteServer } from 'vite';
+import { clientKeyFor, createRateLimiter, gateAgentRequest } from './rateLimit.mjs';
 
 const app = express();
 const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
@@ -19,7 +20,24 @@ if (!process.env.OPENAI_API_KEY && fs.existsSync(localEnvPath)) {
 const isProduction = process.argv.includes('--production');
 const port = Number(process.env.PORT) || 5173;
 const host = process.env.HOST || '127.0.0.1';
-const rateLimits = new Map();
+function readLimit(name, fallback) {
+  if (process.env[name] === undefined || process.env[name] === '') return fallback;
+
+  const value = Number(process.env[name]);
+  if (Number.isInteger(value) && value > 0) return value;
+
+  console.warn(`${name} inválido; usando o padrão ${fallback}.`);
+  return fallback;
+}
+
+// Limites por cliente (15 por 5 min) ficam no módulo. O global é configurável.
+// Valores 30/5 min e 100/dia são propostas de teste e precisam de aprovação.
+const rateLimiter = createRateLimiter({
+  globalMaxRequests: readLimit('AGENT_GLOBAL_LIMIT_5MIN', 30),
+  globalMaxPerDay: readLimit('AGENT_GLOBAL_LIMIT_DAY', 100),
+});
+
+setInterval(() => rateLimiter.sweep(), 5 * 60 * 1000).unref();
 
 const AGENT_INSTRUCTIONS = `
 Você é o Agente Light+, assistente educativo de um curso brasileiro para mantenedores de subestações.
@@ -148,21 +166,6 @@ function getSafetyIdentifier(sessionId = '') {
   return `light_plus_${digest}`;
 }
 
-function isRateLimited(identifier) {
-  const now = Date.now();
-  const windowDuration = 5 * 60 * 1000;
-  const maxRequests = 15;
-  const existing = rateLimits.get(identifier);
-
-  if (!existing || now - existing.startedAt > windowDuration) {
-    rateLimits.set(identifier, { startedAt: now, count: 1 });
-    return false;
-  }
-
-  existing.count += 1;
-  return existing.count > maxRequests;
-}
-
 function hasConfiguredApiKey() {
   const apiKey = process.env.OPENAI_API_KEY?.trim();
 
@@ -235,18 +238,36 @@ app.post('/api/assistant', async (request, response) => {
     request.body?.sessionId || request.ip
   );
 
-  if (isRateLimited(safetyIdentifier)) {
+  // Sem chave, recusa com 503 antes de qualquer cota. Com chave, admissão única:
+  // confere as cotas do cliente e globais e só então consome ambas.
+  // A chave do cliente vem do IP do servidor, nunca do sessionId do navegador.
+  const admission = gateAgentRequest({
+    apiConfigured: hasConfiguredApiKey(),
+    limiter: rateLimiter,
+    clientKey: clientKeyFor(request),
+  });
+
+  if (admission === 'missing_api_key') {
+    return response.status(503).json({
+      code: 'missing_api_key',
+      message:
+        'O Agente Light+ ainda precisa da chave de IA no servidor. Configure OPENAI_API_KEY para ativar as respostas.',
+    });
+  }
+
+  if (admission === 'client_limit') {
     return response.status(429).json({
+      code: 'client_limit',
       message:
         'Muitas perguntas foram enviadas em pouco tempo. Aguarde alguns minutos e tente novamente.',
     });
   }
 
-  if (!hasConfiguredApiKey()) {
-    return response.status(503).json({
-      code: 'missing_api_key',
+  if (admission === 'global_limit') {
+    return response.status(429).json({
+      code: 'global_limit',
       message:
-        'O Agente Light+ ainda precisa da chave de IA no servidor. Configure OPENAI_API_KEY para ativar as respostas.',
+        'O Agente Light+ atingiu o limite de consultas para este período. Tente novamente mais tarde.',
     });
   }
 

@@ -75,7 +75,7 @@ evitar incompatibilidade do Vite 8/Rolldown com o WebContainer do Bolt.
 - Global por 5 minutos: 30 chamadas (variável `AGENT_GLOBAL_LIMIT_5MIN`).
 - Global por 24 horas: 100 chamadas (variável `AGENT_GLOBAL_LIMIT_DAY`).
 - Chamadas excedentes retornam HTTP 429 e não consomem mais cotas.
-- Requisições válidas sem chave OpenAI respondem 503 e ainda consomem cota.
+- Requisições válidas sem chave OpenAI respondem 503 sem consumir cota.
 - Os contadores ficam em memória e são zerados ao reiniciar.
 - Múltiplas instâncias não compartilham esses contadores.
 - Para teto financeiro, configure controles e alertas no projeto da OpenAI.

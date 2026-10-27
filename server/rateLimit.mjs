@@ -15,6 +15,14 @@ export function clientKeyFor(request) {
   return `ip:${request?.ip || 'unknown'}`;
 }
 
+// Decide a admissão de uma requisição ao Agente.
+// Sem chave configurada, retorna 'missing_api_key' sem tocar em nenhuma cota.
+// Com chave configurada, delega à admissão única do limitador.
+export function gateAgentRequest({ apiConfigured, limiter, clientKey, now }) {
+  if (!apiConfigured) return 'missing_api_key';
+  return limiter.admit(clientKey, now);
+}
+
 // Mantém somente os instantes ainda dentro da janela. A lista é crescente.
 function pruneTimestamps(timestamps, windowMs, now) {
   let first = 0;

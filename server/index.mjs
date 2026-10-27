@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import express from 'express';
 import OpenAI from 'openai';
 import { createServer as createViteServer } from 'vite';
-import { clientKeyFor, createRateLimiter } from './rateLimit.mjs';
+import { clientKeyFor, createRateLimiter, gateAgentRequest } from './rateLimit.mjs';
 
 const app = express();
 const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
@@ -238,9 +238,22 @@ app.post('/api/assistant', async (request, response) => {
     request.body?.sessionId || request.ip
   );
 
-  // Admissão única: confere as cotas do cliente e globais e só então consome ambas.
+  // Sem chave, recusa com 503 antes de qualquer cota. Com chave, admissão única:
+  // confere as cotas do cliente e globais e só então consome ambas.
   // A chave do cliente vem do IP do servidor, nunca do sessionId do navegador.
-  const admission = rateLimiter.admit(clientKeyFor(request));
+  const admission = gateAgentRequest({
+    apiConfigured: hasConfiguredApiKey(),
+    limiter: rateLimiter,
+    clientKey: clientKeyFor(request),
+  });
+
+  if (admission === 'missing_api_key') {
+    return response.status(503).json({
+      code: 'missing_api_key',
+      message:
+        'O Agente Light+ ainda precisa da chave de IA no servidor. Configure OPENAI_API_KEY para ativar as respostas.',
+    });
+  }
 
   if (admission === 'client_limit') {
     return response.status(429).json({
@@ -255,14 +268,6 @@ app.post('/api/assistant', async (request, response) => {
       code: 'global_limit',
       message:
         'O Agente Light+ atingiu o limite de consultas para este período. Tente novamente mais tarde.',
-    });
-  }
-
-  if (!hasConfiguredApiKey()) {
-    return response.status(503).json({
-      code: 'missing_api_key',
-      message:
-        'O Agente Light+ ainda precisa da chave de IA no servidor. Configure OPENAI_API_KEY para ativar as respostas.',
     });
   }
 

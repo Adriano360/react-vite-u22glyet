@@ -68,3 +68,14 @@ npm run preview
 
 As versões do Vite e do plugin React estão fixadas no `package.json` para
 evitar incompatibilidade do Vite 8/Rolldown com o WebContainer do Bolt.
+
+## Limites de uso do Agente
+
+- Por cliente (IP visto pelo servidor): 15 perguntas a cada 5 minutos.
+- Global por 5 minutos: 30 chamadas (variável `AGENT_GLOBAL_LIMIT_5MIN`).
+- Global por 24 horas: 100 chamadas (variável `AGENT_GLOBAL_LIMIT_DAY`).
+- Chamadas excedentes retornam HTTP 429 e não consomem mais cotas.
+- Requisições válidas sem chave OpenAI respondem 503 e ainda consomem cota.
+- Os contadores ficam em memória e são zerados ao reiniciar.
+- Múltiplas instâncias não compartilham esses contadores.
+- Para teto financeiro, configure controles e alertas no projeto da OpenAI.
